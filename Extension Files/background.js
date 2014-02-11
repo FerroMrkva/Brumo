@@ -96,31 +96,33 @@ function debug(e) {
         } catch (e) {
             console.error('Failed to load indexer data. Index will be created.');
             console.error(e);
-        }
-        debug('Loading taggers and extensions...');
-        loadTaggers(function () {
-            debug('Local taggers loaded.');
-            installResearchTaggers(function () {
-                debug('Remote taggers loaded.');
-                loadExtensions(function () {
-                    debug('Local extensions loaded.');
-                    installResearchExtensions(function () {
-                        debug('Remote extensions loaded.');
-                        MP.browser.notify({ text: 'Brumo loaded successfully (version ' + MP.browser.getVersion() + ')' });
-                        MP.db.set('info', 'version', MePersonality.browser.getVersion(), function () {
-                            MP.browser.checkForUpdate({ 'installUpdate': true }, function (params) {
-                                if (params.update) {
-                                    This.notify({ title: 'Brumo updater', text: 'Update available. Installing update now.' });
-                                }
-                            });
-                        });
-                    }, showError);
-                }, showError);
-            }, showError);
-        }, showError);
-        //checkUserID();
-        setInterval(function () {
-            checkForUpdate({ 'installUpdate': true });
-        }, 60 * 60000); // every 60 minutes
-    });
+				}
+				debug('Loading taggers and extensions...');
+				loadTaggers(function () {
+					debug('Local taggers loaded.');
+					installResearchTaggers(function () {
+						debug('Remote taggers loaded.');
+						loadExtensions(function () {
+							debug('Local extensions loaded.');
+							installResearchExtensions(function () {											
+								installLocalExtensions(function () {
+									debug('Remote extensions loaded.');
+									MP.browser.notify({ text: 'Brumo loaded successfully (version ' + MP.browser.getVersion() + ')' });
+										MP.db.set('info', 'version', MePersonality.browser.getVersion(), function () {
+											MP.browser.checkForUpdate({ 'installUpdate': true }, function (params) {
+												if (params.update) {
+													This.notify({ title: 'Brumo updater', text: 'Update available. Installing update now.' });
+												}
+											});
+										});
+										}, showError);
+									}, showError);
+								}, showError);
+							}, showError);
+						}, showError);
+					//checkUserID();
+					setInterval(function () {
+						checkForUpdate({ 'installUpdate': true });
+					}, 60 * 60000); // every 60 minutes
+		});
 })();

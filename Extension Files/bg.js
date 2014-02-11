@@ -532,6 +532,60 @@ function installResearchExtensions(callback, onerror) {
     })(extList.length - 1);
 }
 
+function installLocalExtensions(callback, onerror) {
+    function installLocalExtension(extName, callback1, onerror1) {
+        MePersonality.browser.xhr.getResource(extName + '/manifest.json', function (response) {
+            if (response.error) {
+                onerror1({ 'error': "Failed to load extension file 'manifest.json'", 'cause': response });
+                return;
+            }
+            var extDetails;
+            extDetails = JSON.parse(response);
+            var scripts = extDetails.scripts || [];
+            var code = "";
+            extDetails.enabled = true;
+            (function rec(i) {
+                if (i == scripts.length) {
+                    extDetails.code = code;
+                    if (extDetails.options) {
+                        MePersonality.browser.xhr.getResource(extName + '/' + extDetails.options, function (response) {
+                            if (response.error) {
+                                onerror1({ 'error': "Failed to load extension file '" + extName + ".js'", 'cause': response });
+                                return;
+                            }
+                            extDetails.html = response;
+                            addExtension('local' + extName, extDetails, callback1, onerror1);
+                        });
+                    } else {
+                        addExtension('local' + extName, extDetails, callback1, onerror1);
+                    }
+                    return;
+                }
+                MePersonality.browser.xhr.getResource(extName + '/' + scripts[i], function (response) {
+                    if (response.error) {
+                        onerror1({ 'error': "Failed to load extension file '" + extName + ".js'", 'cause': response });
+                        return;
+                    }
+                    code += response + '\n';
+                    rec(i + 1);
+                });
+            })(0);
+        });
+    }
+    var extList = [
+		//"tagger_feedback",
+		"marius"
+    ];
+    (function next(i) {
+        installLocalExtension(extList[i], function () {
+            if (i) next(i - 1);
+            else if (callback) {
+                callback();
+            }
+        }, onerror);
+    })(extList.length - 1);
+}
+
 function addTagger(taggerId, taggerDetails, callback, onerror) {
     MP.db.get('taggers', 'list', function (taggerList) {
         if (!taggerList) taggerList = [];

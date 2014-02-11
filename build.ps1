@@ -133,6 +133,7 @@ function build_chrome_extension {
 			cat "Extension Files/bgMessageHandler.js"
 		}
 	} | out-file "chrome/background.js" -encoding "utf8"
+	cp -r "Extension Files/marius" "chrome/"
 	echo ok
 }
 
@@ -266,6 +267,7 @@ function build_firefox_extension {
 			cat "Extension Files/bgMessageHandler.js"
 		}
 	} | out-file "firefox/background/background.js" -encoding "utf8"
+	cp -r "Extension Files/marius" "firefox/data/"
 	echo ok
 }
 
