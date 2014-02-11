@@ -1,0 +1,85 @@
+<div id='content' onload='loaded();' onunload='unloaded();'>
+	<script type="text/javascript" charset="utf-8">
+		function loaded(){
+		};
+		function unloaded(){
+		};
+	</script>
+	
+	Communication API enables communication among multiple instances of personalisation extension.
+	Communication API currently exposes the following interface:
+
+	<p>
+	<table class='APItable'>
+		<tbody>
+			<tr class='firstRow'>
+				<td>Method</td>
+				<td>Description</td>
+			</tr>
+			<tr>
+				<td class='APIcode'>
+					<a href='javascript:void(0);'
+						onclick='document.getElementById("netAPIcreateUserCharacteristics").scrollIntoView();'>MP.net.createUserCharacteristics()</a></td>
+				<td>To be implemented soon.</td>
+			</tr>
+			<tr>
+				<td class='APIcode'>
+					<a href='javascript:void(0);'
+						onclick='document.getElementById("netAPIconnect").scrollIntoView();'>MP.net.connect()</a></td>
+				<td>Connects to the specified communication channel and returns a WebSocket object.
+					Please see the <a href='http://dev.w3.org/html5/websockets/'>WebSocket API reference</a>
+				 	for more details on how to work with it.</td>
+			</tr>
+		</tbody>
+	</table>
+	</p>
+
+	<h2>Methods</h2>
+	<h3 id='netAPIcreateUserCharacteristics'>createUserCharacteristics</h3>
+	<span class='APIcode'>MP.db.createUserCharacteristics(query, callback);</span>
+	<div class='APIparams'>
+		<p>To be implemented soon.</p>
+	</div>
+	<br/>
+	<h3 id='netAPIconnect'>Connect</h3>
+	<span class='APIcode'>MP.db.connect(channel, onmessage, onerror, onconnect, ondisconnect);</span>
+	<div class='APIparams'>
+		<p>Connects to the specified communication channel and returns a WebSocket object.
+		You can specify optional event handlers for all WebSocket events.
+		Please see the <a href='http://dev.w3.org/html5/websockets/'>WebSocket API reference</a>
+	 	for more details on how to work with it.</p>
+		<h4>Parameters</h4>
+		<div class='APIparam'>
+			channel (string)
+			<p>Name of channel to connect into.</p>
+		</div>
+		<div class='APIparam'>
+			onmessage (<span class="optional">optional</span> function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function (eventData) { var message=eventData.data; ... }</span></p>
+		</div>
+		<div class='APIparam'>
+			onerror (<span class="optional">optional</span> function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function (eventData) { ... }</span></p>
+		</div>
+		<div class='APIparam'>
+			onconnect (<span class="optional">optional</span> function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function (eventData) { ... }</span></p>
+		</div>
+		<div class='APIparam'>
+			ondisconnect (<span class="optional">optional</span> function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function (eventData) { ... }</span></p>
+		</div>
+		<h4>Return value</h4>
+		<div class='APIparam'>
+			(WebSocket)
+			<p>Please see the <a href='http://dev.w3.org/html5/websockets/'>WebSocket API reference</a>
+		 	for more details on how to work with it.</p>
+		</div>
+	</div>
+	<br/>
+
+</div>

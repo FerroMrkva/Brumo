@@ -1,0 +1,656 @@
+﻿/* Styles definitions */
+
+h1, h2, h3, h4 {
+    color: #5c87b2;
+    font-family: Century Gothic,sans-serif;
+    font-weight: 100;
+}
+
+.contentTitle {
+    margin-bottom: 0px;
+}
+
+h4 {
+    line-height: 0.8em;
+}
+
+div {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+br {
+    margin-bottom: 20px;
+}
+
+a {
+    color: #42678c;
+    text-decoration: none;
+}
+
+    a:hover {
+        color: #000;
+        text-shadow: 0px 0px 3px #69c;
+    }
+
+.infoText {
+    color: black;
+}
+
+.errorText {
+    color: red;
+    font-weight: bold;
+}
+
+.nadpis {
+    font-family: Century Gothic, sans-serif;
+    font-family: "Trebuchet MS",Helvetica,sans-serif;
+    font-weight: bold;
+    font-size: 60px;
+    text-shadow: 0 0 5px #69c;
+    color: #5c87b2;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.podnadpis {
+    font-family: Candara;
+    font-size: 18px;
+    text-transform: capitalize;
+    color: #555;
+    text-align: center;
+    font-style: italic;
+}
+
+.BrumB, .BrumR, .BrumO {
+    font-size: 50px;
+    font-weight: bold;
+}
+
+.BrumB {
+    color: rgb(197, 90, 17);
+}
+
+.BrumR {
+    color: rgb(197, 90, 17);
+}
+
+.BrumU {
+    color: rgb(31, 78, 121);
+}
+
+.BrumM {
+    color: rgb(84, 130, 53);
+}
+
+.BrumO {
+    color: rgb(84, 130, 53);
+}
+
+#menubars {
+    background-color: #5c87b2;
+    position: fixed;
+    left: 0px;
+    top: -10px;
+    bottom: -10px;
+    width: 160px;
+    box-shadow: 5px 0px 5px #aaa;
+}
+
+.menu {
+    position: fixed;
+    top: 170px;
+    left: 10px;
+}
+
+#contentTitle {
+    position: absolute;
+    top: 100px;
+    left: 160px;
+    color: #5c87b2;
+    font-family: Century Gothic,sans-serif;
+    font-weight: 100;
+}
+
+.obsah {
+    padding: 5px;
+    position: absolute;
+    left: 160px;
+    top: 170px;
+    right: 20px;
+    bottom: 10px;
+    font-family: Segoe UI;
+    border-top: 2px solid #5c87b2;
+    padding: 10px 0px;
+}
+
+.tags {
+    padding: 5px;
+    font-family: Segoe UI;
+    font-variant: small-caps;
+}
+
+.menuButton {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    font-family: Century Gothic,sans-serif;
+    font-weight: bold;
+    border: 4px solid #5c87b2;
+    padding: 5px 20px;
+    margin: 5px;
+    color: #5c87b2;
+    background-color: #fff; /*border-radius: 4px; 	-webkit-border-radius: 4px; 	-moz-border-radius: 4px;*/
+    user-select: none;
+    cursor: default;
+    color: #fff;
+    background-color: #5c87b2;
+    border: 2px solid #fff;
+}
+
+    .menuButton:hover {
+        color: #fff;
+        background-color: #5c87b2;
+        border: 4px solid #fff;
+        color: #5c87b2;
+        background-color: #fff;
+        border: 2px solid #5c87b2;
+        border: 2px solid #fff;
+        background-color: #42678c;
+        color: #fff;
+    }
+
+    .menuButton:active {
+        border: 2px solid #fff;
+        background-color: #42678c;
+        color: #fff;
+        color: #5c87b2;
+        background-color: #fff;
+        border: 2px solid #5c87b2;
+    }
+
+.button {
+    user-select: none;
+    cursor: default;
+    font-family: Segoe UI;
+    font-weight: bold;
+    border: 2px solid #5c87b2;
+    padding: 0px 5px;
+    margin: 2px;
+    color: #5c87b2;
+    background-color: #fff; /*
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;*/
+}
+
+    .button:hover {
+        color: #fff;
+        background-color: #5c87b2;
+        color: #42678c;
+        box-shadow: 0px 0px 5px #42678c;
+    }
+
+    .button:active {
+        color: #42678c;
+        border: 2px solid #42678c;
+        background-color: #fff;
+        color: #fff;
+        background-color: #5c87b2;
+    }
+
+#removeExtension {
+    position: absolute;
+    right: 5px;
+}
+
+#removeTagger {
+    position: absolute;
+    right: 0px;
+}
+
+.badName {
+    border-color: red;
+}
+
+.removeButton {
+    user-select: none;
+    cursor: default;
+    position: relative;
+    right: 0px;
+    font-family: Segoe UI;
+    font-weight: bold;
+    border: 2px solid red;
+    padding: 0px 5px;
+    margin: 2px;
+    color: red;
+    background-color: #fff; /*
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;*/
+}
+
+    .removeButton:hover {
+        color: #fff;
+        background-color: red;
+        box-shadow: 0px 0px 5px red;
+    }
+
+    .removeButton:active {
+        border: 2px solid #42678c;
+        background-color: #42678c;
+        box-shadow: 0px 0px 5px #42678c;
+    }
+
+.status {
+    font-size: 14px;
+}
+
+.extStatus {
+    font-size: 14px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    height: 18px;
+    padding: 2px;
+    background: #42678c;
+    color: #fff;
+}
+
+#divSettings {
+    padding: 5px;
+}
+
+.extensionEntry {
+    position: relative;
+    height: 100%;
+    padding: 5px 10px;
+}
+
+    .extensionEntry:hover {
+        box-shadow: 0px 0px 5px #5c87b2;
+    }
+
+    .extensionEntry div, .extensionEntry p {
+        color: black;
+        font-size: 14px;
+    }
+
+.extensionName {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: relative;
+    height: 100%;
+    font-size: 18px;
+    color: #5c87b2;
+}
+
+    .extensionName:hover {
+        color: #42678c;
+    }
+
+.extensionCode {
+    position: absolute;
+    bottom: 20px;
+    top: 40px;
+    left: 0px;
+    right: 0px;
+    border: 2px solid #5c87b2;
+    border-top: 0px;
+}
+
+#extensionCode {
+    position: absolute;
+    width: 100%;
+    top: 2px;
+    bottom: 0px;
+}
+
+#taggerCode {
+    height: 100%;
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+.codeTabs {
+    height: 32px;
+    background: #5c87b2;
+    user-select: none;
+}
+
+    .codeTabs ul {
+        list-style: none;
+        padding-left: 0px;
+        margin: 0;
+    }
+
+    .codeTabs li {
+        float: left;
+        padding: 3px;
+        color: #fff;
+    }
+
+        .codeTabs li:hover {
+            background: #42678c;
+            color: #fff;
+        }
+
+        .codeTabs li.selected {
+            background: #fff;
+            color: #42678c;
+        }
+
+            .codeTabs li.selected:hover {
+                background: #fff;
+            }
+
+    .codeTabs span {
+        display: block;
+        padding: 0.15em 0.7em;
+        cursor: default;
+    }
+
+    .codeTabs div {
+        float: left;
+        padding: 3px;
+        background: #42678c;
+        color: #fff;
+    }
+
+        .codeTabs div ul {
+            display: none;
+            background: #fff;
+            border: 1px solid #42678c;
+            margin: 0 auto;
+        }
+
+            .codeTabs div ul span {
+                padding: 0.1em 0.5em;
+                font-size: 14px;
+            }
+
+        .codeTabs div:hover ul {
+            display: block;
+            position: absolute;
+            z-index: 5;
+        }
+
+        .codeTabs div li {
+            color: #42678c;
+        }
+
+        .codeTabs div:hover li {
+            float: none;
+        }
+
+        .codeTabs div:hover ul ul {
+            display: none;
+            margin-left: 90%;
+            margin-top: -25px;
+        }
+
+        .codeTabs div:hover li div span {
+            float: left;
+        }
+
+        .codeTabs div:hover li:hover ul {
+            display: block;
+        }
+
+/*.codeTabs li:hover li ul {
+            display: none;
+            float: left;
+        }
+
+        .codeTabs li:hover li li {
+            float: left;
+        }*/
+
+
+.extensionList {
+    position: absolute;
+    line-height: 0.8;
+    list-style-type: none;
+}
+
+.APItable {
+    background: #dbe5f1;
+    border: 2px solid #42678c;
+    border-spacing: 0;
+    border-collapse: collapse;
+    box-shadow: 0px 0px 5px #5c87b2;
+}
+
+    .APItable td {
+        border: 1px solid #42678c;
+        margin: 0;
+        padding: 5px 10px;
+    }
+
+    .APItable .firstRow td {
+        background: #5c87b2;
+        color: #fff;
+        font-weight: bold;
+        border: 2px solid #42678c;
+        box-shadow: 0px 0px 5px #5c87b2 outset;
+    }
+
+.APIcode {
+    font-family: Courier New;
+    background: #dbe5f1;
+    border: 1px solid #42678c;
+    padding: 5px 10px;
+    box-shadow: 0px 0px 5px #5c87b2;
+}
+
+.APItable .APIcode {
+    box-shadow: 0px 0px 0px;
+}
+
+.APIcode a {
+    text-decoration: none;
+    color: #42678c;
+}
+
+.APIcode :hover {
+    color: black;
+}
+
+.APIparams {
+    padding: 0px 20px;
+}
+
+.APIparam {
+    font-family: Courier New;
+    padding: 0px 20px;
+}
+
+    .APIparam .optional {
+        color: #7d7d7d;
+    }
+
+    .APIparam p {
+        font-family: Segoe UI;
+        padding: 0px 20px;
+    }
+
+.dialogBg {
+    z-index: 10;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100%;
+    display: table;
+    border-spacing: 0;
+    border-collapse: collapse;
+    vertical-align: middle;
+    background: rgba(0,0,0,0.5);
+}
+
+.dialogBox {
+    text-align: center;
+    position: relative;
+    vertical-align: middle;
+    display: table-cell;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+    .dialogBox div .header {
+        font-family: Segoe UI;
+        background: #5c87b2;
+        color: #fff;
+        border: 4px solid #42678c;
+        text-align: left;
+        padding: 5px 10px;
+        box-shadow: 0px 0px 50px #5c87b2;
+    }
+
+    .dialogBox div {
+        background: #dbe5f1;
+        border: 4px solid #42678c;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 5px 10px;
+        box-shadow: 0px 0px 50px #5c87b2;
+    }
+
+#userTags {
+    font-family: Palatino Linotype;
+    position: absolute;
+    bottom: 10px;
+    top: 80px;
+    left: 20px;
+    right: 20px;
+    overflow: hidden;
+}
+
+    #userTags a {
+        position: absolute;
+        text-decoration: none;
+        color: #5c87b2;
+    }
+
+        #userTags a:hover {
+            color: #000;
+            text-shadow: 0px 0px 5px #69c;
+        }
+
+#progress {
+    visibility: collapse;
+}
+
+.tagResult {
+    margin-bottom: 20px;
+}
+
+.tagResultTitle {
+    font-size: 16px;
+    font-weight: bold;
+    color: #5c87b2;
+}
+
+    .tagResultTitle:hover {
+        color: #000;
+        text-shadow: 0px 0px 2px #69c;
+    }
+
+.tagResultUrl {
+    font-size: 13px;
+    color: #093;
+    line-height: 15px;
+}
+
+.tagResultDetails {
+    font-size: 13px;
+    color: #222;
+    line-height: 16px;
+}
+
+.smallLoader {
+    height: 18px;
+    width: 18px;
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(66, 103, 140, 0.5);
+    z-index: 100;
+}
+
+#dialog {
+    font-family: Segoe UI;
+    position: fixed;
+    background: #fff;
+    border: 5px solid #42678c;
+    z-index: 101;
+    left: 50%;
+    top: 50%;
+    padding: 10px;
+}
+
+#dialogButtons {
+    margin-top: 10px;
+}
+
+#extMenuRemove {
+    color: red;
+}
+
+    #extMenuRemove:hover {
+        background: red;
+        color: #fff;
+    }
+
+.float {
+    float: left;
+}
+
+.spacing2em {
+    line-height: 2em;
+}
+
+.italic {
+    font-style: italic;
+}
+
+span .icon-close {
+    font-size: 8px;
+    display: initial;
+    padding: 3px;
+    color: #42678c;
+    background-color: #5c87b2;
+    border-radius: 15px;
+}
+
+.selected span .icon-close {
+    color: black;
+    background-color: white;
+}
+
+span .icon-close:hover {
+    color: white;
+    background-color: red;
+}
+
+span .icon-close:active {
+    background-color: darkred;
+}

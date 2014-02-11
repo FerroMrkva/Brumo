@@ -1,0 +1,68 @@
+<div id='content' onload='loaded();' onunload='unloaded();'>
+    <script id="inlineScript" type="text/javascript" charset="utf-8">
+    </script>
+    <div class="codeTabs">
+        <div id="extMenu">
+            <span>Menu</span>
+            <ul>
+                <li id="extMenuNew">
+                    <span>New</span>
+                    <ul>
+                        <li id="extMenuNewContentScript"><span>Content script</span></li>
+                        <li id="extMenuNewBackgroundScript"><span>Background script</span></li>
+                        <li id="extMenuNewOptionsPage"><span>Options page</span></li>
+                        <li id="extMenuNewOptionsScript"><span>Options script</span></li>
+                    </ul>
+                </li>
+                <li id="extMenuSave"><span>Save</span></li>
+                <li id="extMenuRemove"><span class="">Remove</span></li>
+                <li id="extMenuClose"><span>Close</span></li>
+            </ul>
+        </div>
+        <ul id="tabList">
+            <li id="tabSettings" class="selected"><span>Settings</span></li>
+            <!--<li id="contentScript"><span>Extension code</span></li>
+            <li id="optionsPage"><span>Options page</span></li>-->
+        </ul>
+    </div>
+    <div class="extensionCode">
+        <div id="divSettings">
+            <table class="float">
+                <tr>
+                    <td>Extension name:</td>
+                    <td>
+                        <input id="extensionName" type="text" value="MyPrivateExtension" autofocus /></td>
+                </tr>
+                <tr>
+                    <td>Author name:</td>
+                    <td>
+                        <input id="extensionAuthor" type="text" value="You" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Version number:</td>
+                    <td>
+                        <input id="extensionVersion" type="text" value="1.0" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Description:</td>
+                    <td>
+                        <textarea id="extensionDescription" rows="10" placeholder="Here you can describe the purpose of your extension." />
+                    </td>
+                </tr>
+            </table>
+            <div>
+                <h2>Extension files</h2>
+                <table>
+                    <tbody id="extFileList"></tbody>
+                </table>
+                <br />
+                <div><span id="addExtFile" class="button">Add file</span></div>
+            </div>
+        </div>
+        <div id="extensionCode" class="hidden" />
+    </div>
+    <div class="extStatus" id="status"></div>
+</div>
+

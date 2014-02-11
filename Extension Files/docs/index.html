@@ -1,0 +1,145 @@
+<div id='content' onload='loaded();' onunload='unloaded();'>
+	<script type="text/javascript" charset="utf-8">
+		function loaded(){
+		};
+		function unloaded(){
+		};
+	</script>
+	MePersonality presents a distributed multi-agent collaborative personalisation platform.
+	Since the main purpose is to enable personalisation of browsed web content to user,
+	MePersonality provides an interface for user interests model access.
+	Via personalisation extensions, user can extend this model even further
+	and based on gathered information about user interests and behaviour,
+	user can modify content of browsed web pages to work more efficiently and comfortably.
+
+	<h2 id='personalisation extensions'>Personalisation extensions</h2>
+	Personalisation extensions are basically pieces of JavaScript code
+	which can personalise the web browsing according to user needs.
+	Besides basic functionality of JavaScript language,
+	MePersonality provides wider possibilities within personalisation extensions including:
+	<ul>
+		<li>Built-in support of jQuery framework</li>
+		<li>Use of other external JavaScript files, e.g. another third-party library</li>
+		<li>Cross-origin requests</li>
+		<li>Access to user browsing history</li>
+		<li>Persistent storage via database API</li>
+		<li>Personalisation API</li>
+		<li>Communication API</li>
+	</ul>
+	This functionality is contained in a simple and fully asynchronous API
+	which contributes to better user experience
+	and more comfortable development of high-quality personalisation extensions.
+	Moreover, this platform is aimed to be independent of contained web browser,
+	so that developer does not need to concern about any compatibility issues
+	and is able to focus on the main work goal - the personalisation.
+
+	<h2 id='databaseAPI'>Database API</h2>
+	Database API provides a unified interface to access the database (one of the advantages of our solution),
+	so that developers need not worry about what type of database is currently implemented in the browser.
+	Each extension has its own database, so different extensions do not limit each other.
+	The database API currently exposes the following interface:
+	<p>
+	<table class='APItable'>
+		<tbody>
+			<tr class='firstRow'>
+				<td>Method</td>
+				<td>Description</td>
+			</tr>
+			<tr>
+				<td class='functionName'>clear()</td>
+				<td>Deletes all records from the database.</td>
+			</tr>
+			<tr>
+				<td class='functionName'>get()</td>
+				<td>Returns a record with specified key.</td>
+			</tr>
+			<tr>
+				<td class='functionName'>set()</td>
+				<td>Sets the value of the record with specified key to a given value.
+					This value can be of any JavaScript type that can be converted to a JSON string.
+					If the key is already present in the database before insertion, its value is updated,
+					otherwise the key is created and its value is adjusted
+					according to the value specified as a parameter to this function.</td>
+			</tr>
+			<tr>
+				<td class='functionName'>remove()</td>
+				<td>Removes record with the given key from the database.
+					If no such key exists in the database, nothing changes.</td>
+			</tr>
+		</tbody>
+	</table>
+	</p>
+
+	<h2 id='personalisationAPI'>Personalisation API</h2>
+	Personalization API enables access to all user information we have obtained
+	within the user interest modelling process.
+	It provides the following functionality:
+	<p>
+	<table class='APItable'>
+		<tbody>
+			<tr class='firstRow'>
+				<td>Method</td>
+				<td>Description</td>
+			</tr>
+			<tr>
+				<td class='functionName'>getUrlsByTag()</td>
+				<td>Returns URL list sorted by the relevancy of given tag.</td>
+			</tr>
+			<tr>
+				<td class='functionName'>getTagsByUrl()</td>
+				<td>Returns weighted tag list for given URL address.</td>
+			</tr>
+			<tr>
+				<td class='functionName'>getDomains()</td>
+				<td>Returns domain list sorted by the visit count.</td>
+			</tr>
+			<tr>
+				<td class='functionName'>getUserTags()</td>
+				<td>Returns weighted list of tags with the highest relevancy
+					within the whole user model (global user interests).</td>
+			</tr>
+			<tr>
+				<td class='functionName'>getUserTagsByDomain()</td>
+				<td>Returns weighted list of tags with the highest relevancy
+					within the given domain (local user interests).</td>
+			</tr>
+			<tr>
+				<td class='functionName'>getTagRelevancy()</td>
+				<td>Returns relevancy of given tag.</td>
+			</tr>
+			<tr>
+				<td class='functionName'>getUrlTitle()</td>
+				<td>Returns title for given URL.</td>
+			</tr>
+			<tr>
+				<td class='functionName'>getVisitCount()</td>
+				<td>Returns visit count of given URL.</td>
+			</tr>
+		</tbody>
+	</table>
+	</p>
+
+	<h2 id='communicationAPI'>Communication API</h2>
+	Communication API enables communication among multiple instances of personalisation extension.
+	It provides the following functionality:
+	<p>
+	<table class='APItable'>
+		<tbody>
+			<tr class='firstRow'>
+				<td>Method</td>
+				<td>Description</td>
+			</tr>
+			<tr>
+				<td class='functionName'>createUserCharacteristics()</td>
+				<td>To be implemented soon.</td>
+			</tr>
+			<tr>
+				<td class='functionName'>connect()</td>
+				<td>Connects to the specified communication channel and returns a WebSocket object.
+					Please see the WebSocket API reference for more details on how to work with it.</td>
+			</tr>
+		</tbody>
+	</table>
+	</p>
+
+</div>

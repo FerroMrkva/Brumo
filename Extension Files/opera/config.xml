@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="http://brumo.fiit.stuba.sk/brumo_test" viewmodes="minimized" version="1.0">
+
+  <name>Brumo</name>
+
+  <author>FerroMrkva</author>
+  <description>Browser-based user modelling and personalisation framework</description>
+  <icon src="data/logo-short-128.png"/>
+  <icon src="data/logo-short-64.png"/>
+  <icon src="data/logo-short-48.png"/>
+  <icon src="data/logo-short-16.png"/>
+  
+  <content src="index.xml"
+    encoding="utf-8"
+    type="application/xhtml+xml"/>
+
+  <feature name="opera:speeddial" required="true">
+    <param name="url" value="http://my.opera.com/chooseopera/blog/"/>
+  </feature>
+
+  <access origin="*"/>
+ 	
+</widget>

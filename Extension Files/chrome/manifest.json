@@ -1,0 +1,43 @@
+{
+	"manifest_version": 2,
+	"name": "Brumo",
+    "version":
+	,
+	"description": "Browser-based user modelling and personalisation framework",
+	"background": {
+		"page": "background.html",
+		"persistent": true
+	},
+	"options_page": "options/options.html",
+	"permissions": [
+		"history", "tabs", "<all_urls>", "unlimitedStorage", "background", "management", "webNavigation", "webRequest", "notifications"
+	],
+	"content_security_policy": "script-src 'self' 'unsafe-eval' https://brumo.fiit.stuba.sk; object-src 'self'",
+	"icons": {
+		"16": "data/logo-short-16.png",
+		"48": "data/logo-short-48.png",
+		"128": "data/logo-short-128.png"
+	},
+	"browser_action": {
+		"default_icon": {
+			"19": "data/Brumo-19.png",
+			"38": "data/Brumo-38.png"
+		},
+		"default_title": "Brumo"
+	},
+	"web_accessible_resources": [
+		"data/logo-short-16.png",
+		"data/logo-short-48.png",
+		"data/logo-short-128.png"
+	],
+	"update_url": "http://brumo.fiit.stuba.sk/update.xml",
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"run_at": "document_start",
+			"js": ["external/jquery-2.0.3.min.js","external/jquery-ui-1.10.3.custom.min.js","content.js","extContent.js"]
+		}
+	],
+	"web_accessible_resources": []
+}
+

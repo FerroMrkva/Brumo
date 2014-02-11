@@ -1,0 +1,16 @@
+{
+    "name": "brumo",
+    "license": "MPL 2.0",
+    "author": "FerroMrkva",
+    "version":
+	,
+    "fullName": "Brumo",
+    "id": "jid1-5ZAxCE9biKOlJw",
+	"lib": "background",
+	"main": "background",
+	"dependencies": ["browser-action","toolbarwidget"],
+	"icon": "data/logo-short-48.png",
+	"icon64": "data/logo-short-64.png",
+    "description": "Browser-based user modelling and personalisation framework",
+	"homepage": "https://brumo.fiit.stuba.sk/"
+}

@@ -1,0 +1,318 @@
+<div id='content' onload='loaded();' onunload='unloaded();'>
+	<script type="text/javascript" charset="utf-8">
+		function loaded(){
+		};
+		function unloaded(){
+		};
+		function scrollTo(element){
+			$('html,body').animate({ scrollTop: $('#'+element).offset().top }, { duration: 'slow', easing: 'swing'});
+		}
+	</script>
+	
+	Personalization API enables access to all user information we have obtained
+	within the user interest modelling process.
+	Personalisation API currently exposes the following interface:
+
+	<p>
+	<table class='APItable'>
+		<tbody>
+			<tr class='firstRow'>
+				<td>Method</td>
+				<td>Description</td>
+			</tr>
+			<tr>
+				<td class='APIcode'>
+					<a href='javascript:void(0);'
+						onclick='scrollTo("meAPIgetUrlsByTag");'>MP.me.getUrlsByTag()</a></td>
+				<td>Returns URL list sorted by the relevancy of given tag.</td>
+			</tr>
+			<tr>
+				<td class='APIcode'>
+					<a href='javascript:void(0);'
+						onclick='scrollTo("meAPIgetTagsByUrl");'>MP.me.getTagsByUrl()</a></td>
+				<td>Returns tag list sorted by the relevancy of given URL address.</td>
+			</tr>
+			<tr>
+				<td class='APIcode'>
+					<a href='javascript:void(0);'
+						onclick='scrollTo("meAPIgetDomains");'>MP.me.getDomains()</a></td>
+				<td>Returns domain list sorted by the visit count.</td>
+			</tr>
+			<tr>
+				<td class='APIcode'>
+					<a href='javascript:void(0);'
+						onclick='scrollTo("meAPIgetUserTags");'>MP.me.getUserTags()</a></td>
+				<td>Returns weighted list of tags with the highest relevancy
+					within the whole user model (global user interests).</td>
+			</tr>
+			<tr>
+				<td class='APIcode'>
+					<a href='javascript:void(0);'
+						onclick='scrollTo("meAPIgetUserTagsByDomain");'>MP.me.getUserTagsByDomain()</a></td>
+				<td>Returns weighted list of tags with the highest relevancy
+					within the given domain (local user interests).</td>
+			</tr>
+			<tr>
+				<td class='APIcode'>
+					<a href='javascript:void(0);'
+						onclick='scrollTo("meAPIgetTagRelevancy");'>MP.me.getTagRelevancy()</a></td>
+				<td>Returns relevancy of given tag.</td>
+			</tr>
+			<tr>
+				<td class='APIcode'>
+					<a href='javascript:void(0);'
+						onclick='scrollTo("meAPIgetUrlDetails");'>MP.me.getUrlDetails()</a></td>
+				<td>Returns details for given URL address.</td>
+			</tr>
+		</tbody>
+	</table>
+	</p>
+
+	<h2>Methods</h2>
+	<h3 id='meAPIgetUrlsByTag'>getUrlsByTag</h3>
+	<span class='APIcode'>MP.me.getUrlsByTag(query,callback);</span>
+	<div class='APIparams'>
+		<p>Returns URL list sorted by the relevancy of given tag.</p>
+		<h4>Parameters</h4>
+		<div class='APIparam'>
+			query (object)
+			<p>
+			<div class='APIparam'>
+				tag (string)
+				<p>A keyword which describes returned URL addresses.</p>
+			</div>
+			<div class='APIparam'>
+				maxResults (<span class='optional'>optional</span> integer)
+				<p>The maximum number of results to retrieve. Defaults to 10.</p>
+			</div>
+			</p>
+		</div>
+		<div class='APIparam'>
+			callback (function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function (array of
+			 	<a href='javascript:void(0);'
+					onclick='scrollTo("meAPIWeightedUrl");'>WeightedUrl</a>
+			 	results) { ... }</span></p>
+		</div>
+	</div>
+	<br/>
+	<h3 id='meAPIgetTagsByUrl'>getTagsByUrl</h3>
+	<span class='APIcode'>MP.me.getTagsByUrl(query,callback);</span>
+	<div class='APIparams'>
+		<p>Returns tag list sorted by the relevancy of given URL address.</p>
+		<h4>Parameters</h4>
+		<div class='APIparam'>
+			query (object)
+			<p>
+			<div class='APIparam'>
+				url (string)
+				<p>A URL to get tags for.</p>
+			</div>
+			<div class='APIparam'>
+				maxResults (<span class='optional'>optional</span> integer)
+				<p>The maximum number of results to retrieve. Defaults to 10.</p>
+			</div>
+			</p>
+		</div>
+		<div class='APIparam'>
+			callback (function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function (array of
+			 	<a href='javascript:void(0);'
+					onclick='scrollTo("meAPIWeightedTag");'>WeightedTag</a>
+			 	results) { ... }</span></p>
+		</div>
+	</div>
+	<br/>
+	<h3 id='meAPIgetDomains'>getDomains</h3>
+	<span class='APIcode'>MP.me.getDomains(query,callback);</span>
+	<div class='APIparams'>
+		<p>Returns domain list sorted by the visit count,
+	 	where domain relevancy is its visit count.</p>
+		<h4>Parameters</h4>
+		<div class='APIparam'>
+			query (object)
+			<p>
+			<div class='APIparam'>
+				maxResults (<span class='optional'>optional</span> integer)
+				<p>The maximum number of results to retrieve. Defaults to 10.</p>
+			</div>
+			</p>
+		</div>
+		<div class='APIparam'>
+			callback (function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function (array of
+			 	<a href='javascript:void(0);'
+					onclick='scrollTo("meAPIWeightedUrl");'>WeightedUrl</a>
+			 	results) { ... }</span></p>
+		</div>
+	</div>
+	<br/>
+	<h3 id='meAPIgetUserTags'>getUserTags</h3>
+	<span class='APIcode'>MP.me.getUserTags(query,callback);</span>
+	<div class='APIparams'>
+		<p>Returns weighted list of tags with the highest relevancy
+		within the whole user model (global user interests).</p>
+		<h4>Parameters</h4>
+		<div class='APIparam'>
+			query (object)
+			<p>
+			<div class='APIparam'>
+				maxResults (<span class='optional'>optional</span> integer)
+				<p>The maximum number of results to retrieve. Defaults to 10.</p>
+			</div>
+			</p>
+		</div>
+		<div class='APIparam'>
+			callback (function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function (array of
+			 	<a href='javascript:void(0);'
+					onclick='scrollTo("meAPIWeightedTag");'>WeightedTag</a>
+			 	results) { ... }</span></p>
+		</div>
+	</div>
+	<br/>
+	<h3 id='meAPIgetUserTagsByDomain'>getUserTagsByDomain</h3>
+	<span class='APIcode'>MP.me.getUserTagsByDomain(query,callback);</span>
+	<div class='APIparams'>
+		<p>Returns weighted list of tags with the highest relevancy
+		within the given domain (local user interests).</p>
+		<h4>Parameters</h4>
+		<div class='APIparam'>
+			query (object)
+			<p>
+			<div class='APIparam'>
+				domain (string)
+				<p>A domain to get user tags for.</p>
+			</div>
+			<div class='APIparam'>
+				maxResults (<span class='optional'>optional</span> integer)
+				<p>The maximum number of results to retrieve. Defaults to 10.</p>
+			</div>
+			</p>
+		</div>
+		<div class='APIparam'>
+			callback (function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function (array of
+			 	<a href='javascript:void(0);'
+					onclick='scrollTo("meAPIWeightedTag");'>WeightedTag</a>
+			 	results) { ... }</span></p>
+		</div>
+	</div>
+	<br/>
+	<h3 id='meAPIgetTagRelevancy'>getTagRelevancy</h3>
+	<span class='APIcode'>MP.me.getTagRelevancy(query,callback);</span>
+	<div class='APIparams'>
+		<p>Returns relevancy of given tag.</p>
+		<h4>Parameters</h4>
+		<div class='APIparam'>
+			query (object)
+			<p>
+			<div class='APIparam'>
+				tag (string)
+				<p>A name of tag to get relevancy of.</p>
+			</div>
+			</p>
+		</div>
+		<div class='APIparam'>
+			callback (function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function (relevancy) { ... }</span></p>
+			<p>where relevancy is the number denoting relevancy of given tag.</p>
+		</div>
+	</div>
+	<br/>
+	<h3 id='meAPIgetUrlDetails'>getUrlDetails</h3>
+	<span class='APIcode'>MP.me.getUrlDetails(query,callback);</span>
+	<div class='APIparams'>
+		<p>Returns details for given URL address.</p>
+		<h4>Parameters</h4>
+		<div class='APIparam'>
+			query (object)
+			<p>
+			<div class='APIparam'>
+				url (string)
+				<p>A URL address to get details for.</p>
+			</div>
+			</p>
+		</div>
+		<div class='APIparam'>
+			callback (function)
+			<p>This parameter should be a function in the following form:</p>
+			<p><span class='APIcode'>function
+				(<a href='javascript:void(0);'
+					onclick='scrollTo("meAPIUrlDetails");'>UrlDetails</a>)
+				{ ... }</span></p>
+		</div>
+	</div>
+	<br/>
+	
+	<h2>Types</h2>
+	<h3 id='meAPIWeightedUrl'>WeightedUrl</h3>
+	<div class='APIparam'>
+		(object)
+		<p>
+		<div class='APIparam'>
+			url (string)
+			<p>A URL address.</p>
+		</div>
+		<div class='APIparam'>
+			relevancy (number)
+			<p>The relevancy of this URL address.</p>
+		</div>
+		</p>
+	</div>
+	<br/>
+	<h3 id='meAPIWeightedTag'>WeightedTag</h3>
+	<div class='APIparam'>
+		(object)
+		<p>
+		<div class='APIparam'>
+			tag (string)
+			<p>A name of tag.</p>
+		</div>
+		<div class='APIparam'>
+			relevancy (number)
+			<p>The relevancy of this tag.</p>
+		</div>
+		</p>
+	</div>
+	<br/>
+	<h3 id='meAPIUrlDetails'>UrlDetails</h3>
+	<div class='APIparam'>
+		(object)
+		<p>
+		<div class='APIparam'>
+			id (string)
+			<p>The unique identifier for given URL.</p>
+		</div>
+		<div class='APIparam'>
+			url (string)
+			<p>The URL navigated to by a user.</p>
+		</div>
+		<div class='APIparam'>
+			title (string)
+			<p>The title of the page when it was last loaded.</p>
+		</div>
+		<div class='APIparam'>
+			lastVisitTime (string)
+			<p>When this page was last loaded,
+		 	represented in milliseconds since the epoch.</p>
+		</div>
+		<div class='APIparam'>
+			visitCount (string)
+			<p>The number of times the user has navigated to this page.</p>
+		</div>
+		<div class='APIparam'>
+			typedCount (number)
+			<p>The number of times the user has navigated to this page by typing in the address.</p>
+		</div>
+		</p>
+	</div>
+	<br/>
+
+</div>

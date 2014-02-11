@@ -1,0 +1,67 @@
+<div id='content' onload='loaded();' onunload='unloaded();'>
+	<script type="text/javascript" charset="utf-8">
+		function loaded() {
+			$('#viewModel').click(function () {
+				viewContent("model", "my model");
+			});
+			$('#viewSettings').click(function () {
+				viewContent("settings", "settings");
+			});
+			$('#databaseAPIdoc').click(function () {
+				viewContent("../docs/databaseAPI.html", "database api");
+			});
+			$('#personalisationAPIdoc').click(function () {
+				viewContent("../docs/personalisationAPI.html", "personalisation api");
+			});
+			$('#communicationAPIdoc').click(function () {
+				viewContent("../docs/communicationAPI.html", "communication api");
+			});
+		};
+		function unloaded() {
+		};
+	</script>
+
+	Brumo presents a browser-based distributed multi-agent collaborative user modelling and personalisation platform.
+	Since the main purpose is to enable personalisation of browsed web content to user,
+	Brumo provides an interface for user interests model access.
+	Via personalisation extensions, user can extend this model even further
+	and based on gathered information about user interests and behaviour,
+	user can modify content of browsed web pages to work more efficiently and comfortably.
+
+	<h2 class="contentTitle">Setup</h2>
+	To have the best possible experience of using Brumo, you need to have
+	<a id="viewModel" href='javascript:void(0);'>your browsing history indexed</a>.
+	Note that this can take a few minutes and has rather heavy load on network traffic.
+	You can do it manually whenever you feel comfortable enough to do so.
+	<br />
+	You are also contributing to better experiment results by having your unique user ID.
+	If you do not feel comfortable with it, you can remove it and be
+	<a id="viewSettings" href='javascript:void(0);'>anonymous</a>.
+
+	<h2 id='personalisation extensions' class="contentTitle">Personalisation extensions</h2>
+	Personalisation extensions are basically pieces of JavaScript code
+	which can personalise the web browsing according to user needs.
+	Besides basic functionality of JavaScript language,
+	Brumo provides wider possibilities within personalisation extensions including:
+	<ul>
+		<li>Built-in support of jQuery framework</li>
+		<li>Use of other external JavaScript files, e.g. another third-party library</li>
+		<li>Cross-origin requests</li>
+		<li>Access to user browsing history</li>
+		<li>Persistent storage via <a id="databaseAPIdoc" href='javascript:void(0);'>database API</a></li>
+		<li><a id="personalisationAPIdoc" href='javascript:void(0);'>Personalisation API</a></li>
+		<li><a id="communicationAPIdoc" href='javascript:void(0);'>Communication API</a></li>
+	</ul>
+
+	This functionality is contained in a simple and fully asynchronous API
+	which contributes to better user experience
+	and more comfortable development of high-quality personalisation extensions.
+	Moreover, this platform is aimed to be independent of contained web browser,
+	so that developer does not need to concern about any compatibility issues
+	and is able to focus on the main work goal - the personalisation.
+
+	<h2 class="contentTitle">Annota</h2>
+	Try out also <a href="http://annota.fiit.stuba.sk/">Annota</a>, a bookmarking service for web-pages and PDF documents.
+	
+	<br />
+</div>
