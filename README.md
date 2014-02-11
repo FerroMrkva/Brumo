@@ -1,5 +1,3 @@
-Brumo: Browser-Based User Modelling And Personalisation Framework
-
 Brumo presents a browser-based distributed multi-agent collaborative user modelling and personalisation platform.
 Since the main purpose is to enable personalisation of browsed web content to user,
 Brumo provides an interface for user interests model access.
