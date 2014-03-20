@@ -37,7 +37,7 @@ function build_chrome_extension {
 	cp "Extension Files/options/ace/worker-javascript.js" "chrome/options/ace/"
 	cat "Extension Files/options/options.html" | % {
 		$_;	if ($_ -match "INSERT_CONTENT") {
-			echo '<script type=\"text/javascript\" src=\"../content.js\" charset=\"utf-8\"></script>'
+			echo '<script type="text/javascript" src="../content.js" charset="utf-8"></script>'
 		}
 	} | out-file "chrome/options/options.html" -encoding "utf8"
 	cp "Extension Files/options/options.css" "chrome/options/"
@@ -107,8 +107,8 @@ function build_chrome_extension {
 	cp "Extension Files/chrome/background.html" "chrome/"
 	cat "Extension Files/background.js" | % {
 		$_;	if ($_ -match "function browser()") {
-			echo "MePersonalityBrowser = MePersonalityGoogleChromeBrowser;"
 			cat "Extension Files/browser.js"
+			echo "MePersonalityBrowser = MePersonalityGoogleChromeBrowser;"
 		}
 		if ($_ -match "function heap()") {
 			cat "Extension Files/heap.js"
@@ -117,8 +117,8 @@ function build_chrome_extension {
 			cat "Extension Files/radixTrie.js"
 		}
 		if ($_ -match "function database()") {
-			echo "MePersonalityDatabase = MePersonalityWebSQLDatabase;"
 			cat "Extension Files/database.js"
+			echo "MePersonalityDatabase = MePersonalityWebSQLDatabase;"
 		}
 		if ($_ -match "function xhr()") {
 			cat "Extension Files/xhr.js"

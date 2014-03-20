@@ -81,8 +81,8 @@ function debug(e) {
             console.error(e);
         }
         MePersonality.db = new MePersonalityDatabase();
-        if (!MePersonality.translator)
-            MePersonality.translator = new MePersonalityTranslator();
+        //if (!MePersonality.translator)
+            //MePersonality.translator = new MePersonalityTranslator();
         if (!MePersonality.ngrams)
             MePersonality.ngrams = new MePersonalityNgrams();
         if (!MePersonality.tagger)

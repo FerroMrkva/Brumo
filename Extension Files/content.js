@@ -1,4 +1,6 @@
 
+console.log("ja som to");
+
 /// BROWSER_SPECIFIC
 
 /// MP_API
