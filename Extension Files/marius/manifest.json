@@ -1,0 +1,7 @@
+{
+	"name": "LDA topics of interest",
+	"description": "Discover topics of your interest hidden in your browsing history!",
+	"version": "1.0.5",
+	"author": "FerroMrkva",
+	"options": "options.html"
+}
