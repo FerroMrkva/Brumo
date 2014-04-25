@@ -99,7 +99,7 @@ MePersonalityNet = function () {
         This._connect(params, callback);
     };
     this._send = function (params, callback) {
-        debug('in channel ' + params.channel + ' send ' + JSON.stringify(params.data));
+        //debug('in channel ' + params.channel + ' send ' + JSON.stringify(params.data));
         if (sockets[params.channel]) {
             var socket = sockets[params.channel].socket;
             if (socket.readyState == socket.OPEN) {

@@ -1,0 +1,19 @@
+{
+	"name": "Visu",
+	"description": "Wordcloud,s in time",
+	"version": "1.0.7",
+	"author": "Jaro",
+	"files":[
+	{
+		"name": "options.html",
+		"role": "options page"
+	},
+	{
+		"name": "data.js",
+		"role": "options script"
+	},
+	{
+		"name": "spreadact.js",
+		"role": "options script"
+	}]
+}

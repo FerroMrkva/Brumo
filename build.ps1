@@ -1,10 +1,28 @@
-$version = $(cat "Extension Files/version.txt")
+$version = $(cat "Extension Files/version.txt").Split('"')[1]
+
+function update_version_number {
+	$version_numbers = $version.Split(".")
+	$updated = $false
+	for ($i=3;($i -ge 0) -and -not $updated;--$i) {
+		$number = [int]$version_numbers[$i]
+		if ((-not $updated -and $number -lt 255) -or -not $i) {
+			$number++
+			$updated = $true
+		} else {
+			$number = 0
+		}
+		$version_numbers[$i] = [string]$number
+	}
+	return $version_numbers -Join "."
+}
+$version = update_version_number
 echo "building version $version"
+echo ('"',$version,'"' -Join "") | out-file "Extension Files/version.txt" -encoding "utf8"
 
 function build_chrome_extension {
 	write-host "building chrome extension..." -nonewline
 	if (test-path "chrome") { rm -r -force "chrome" }
-	$dirs = "chrome", "chrome/data", "chrome/docs", "chrome/external", "chrome/external/jspos", "chrome/options", "chrome/options/ace"
+	$dirs = "chrome", "chrome/data", "chrome/docs", "chrome/external", "chrome/external/jspos", "chrome/external/LanguageIdentifier", "chrome/options", "chrome/options/ace"
 	echo $dirs | % { if (!(test-path $_)) { [void](md $_) } }
 	cat "Extension Files/chrome/manifest.json" | % {
 		$_ -replace "`"version`":", "`"version`": $version"
@@ -25,8 +43,40 @@ function build_chrome_extension {
 	cp "Extension Files/external/jspos/lexer.js" "chrome/external/jspos/"
 	cp "Extension Files/external/jspos/lexicon.js" "chrome/external/jspos/"
 	cp "Extension Files/external/jspos/POSTagger.js" "chrome/external/jspos/"
+	cp "Extension Files/external/LanguageIdentifier/LanguageIdentifier.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/be.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/ca.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/cs.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/da.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/de.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/el.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/en.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/eo.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/es.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/et.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/fi.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/fr.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/ga.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/gl.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/hu.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/hy.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/is.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/it.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/lt.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/nl.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/no.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/pl.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/pt.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/ro.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/ru.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/sk.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/sl.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/sv.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/th.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/tr.js" "chrome/external/LanguageIdentifier/"
+	cp "Extension Files/external/LanguageIdentifier/uk.js" "chrome/external/LanguageIdentifier/"
 	cp "Extension Files/net.js" "chrome/"
-	#cp "Extension Files/translator.js" "chrome/"
+#cp "Extension Files/translator.js" "chrome/"
 	cp "Extension Files/ngrams.js" "chrome/"
 	cp "Extension Files/tagger.js" "chrome/"
 	cp "Extension Files/options/ace/ace.js" "chrome/options/ace/"
@@ -41,14 +91,14 @@ function build_chrome_extension {
 		}
 	} | out-file "chrome/options/options.html" -encoding "utf8"
 	cp "Extension Files/options/options.css" "chrome/options/"
-	cp "Extension Files/options/options.js" "chrome/options/"
-	cp "Extension Files/data/loader-black-64.gif" "chrome/options/"
-	cp "Extension Files/options/home.html" "chrome/options/"
-	cat "Extension Files/options/model.html" | % {
-		$_;	if ($_ -match "inlineScript") {
-			cat "Extension Files/options/model.js"
-		}
-	} | out-file "chrome/options/model.html" -encoding "utf8"
+		cp "Extension Files/options/options.js" "chrome/options/"
+		cp "Extension Files/data/loader-black-64.gif" "chrome/options/"
+		cp "Extension Files/options/home.html" "chrome/options/"
+		cat "Extension Files/options/model.html" | % {
+			$_;	if ($_ -match "inlineScript") {
+				cat "Extension Files/options/model.js"
+			}
+		} | out-file "chrome/options/model.html" -encoding "utf8"
 	cat "Extension Files/options/tagURLs.html" | % {
 		$_;	if ($_ -match "inlineScript") {
 			cat "Extension Files/options/tagURLs.js"
@@ -90,100 +140,100 @@ function build_chrome_extension {
 		}
 	} | out-file "chrome/options/addTagger.html" -encoding "utf8"
 	cp "Extension Files/options/extensionTemplate.js" "chrome/options/"
-	cp "Extension Files/options/taggerTemplate.js" "chrome/options/"
-	cp "Extension Files/docs/communicationAPI.html" "chrome/docs/"
-	cp "Extension Files/docs/databaseAPI.html" "chrome/docs/"
-	cp "Extension Files/docs/index.html" "chrome/docs/"
-	cp "Extension Files/docs/personalisationAPI.html" "chrome/docs/"
-	cat "Extension Files/content.js" | % {
-		$_;	if ($_ -match "/// MP_API") {
-			cat "Extension Files/api.js"
-		}
-		if ($_ -match "/// BROWSER_SPECIFIC") {
-			cat "Extension Files/chrome/content.js"
-		}
-	} | out-file "chrome/content.js" -encoding "utf8"
+		cp "Extension Files/options/taggerTemplate.js" "chrome/options/"
+		cp "Extension Files/docs/communicationAPI.html" "chrome/docs/"
+		cp "Extension Files/docs/databaseAPI.html" "chrome/docs/"
+		cp "Extension Files/docs/index.html" "chrome/docs/"
+		cp "Extension Files/docs/personalisationAPI.html" "chrome/docs/"
+		cat "Extension Files/content.js" | % {
+			$_;	if ($_ -match "/// MP_API") {
+				cat "Extension Files/api.js"
+			}
+			if ($_ -match "/// BROWSER_SPECIFIC") {
+				cat "Extension Files/chrome/content.js"
+			}
+		} | out-file "chrome/content.js" -encoding "utf8"
 	cp "Extension Files/extContent.js" "chrome/"
-	cp "Extension Files/chrome/background.html" "chrome/"
-	cat "Extension Files/background.js" | % {
-		$_;	if ($_ -match "function browser()") {
-			cat "Extension Files/browser.js"
-			echo "MePersonalityBrowser = MePersonalityGoogleChromeBrowser;"
-		}
-		if ($_ -match "function heap()") {
-			cat "Extension Files/heap.js"
-		}
-		if ($_ -match "function radixTrie()") {
-			cat "Extension Files/radixTrie.js"
-		}
-		if ($_ -match "function database()") {
-			cat "Extension Files/database.js"
-			echo "MePersonalityDatabase = MePersonalityWebSQLDatabase;"
-		}
-		if ($_ -match "function xhr()") {
-			cat "Extension Files/xhr.js"
-		}
-		if ($_ -match "function indexer()") {
-			cat "Extension Files/indexer.js"
-		}
-		if ($_ -match "/// BACKGROUND") {
-			cat "Extension Files/bg.js"
-		}
-		if ($_ -match "function bgMessageHandler()") {
-			cat "Extension Files/bgMessageHandler.js"
-		}
-	} | out-file "chrome/background.js" -encoding "utf8"
+		cp "Extension Files/chrome/background.html" "chrome/"
+		cat "Extension Files/background.js" | % {
+			$_;	if ($_ -match "function browser()") {
+				cat "Extension Files/browser.js"
+					echo "MePersonalityBrowser = MePersonalityGoogleChromeBrowser;"
+			}
+			if ($_ -match "function heap()") {
+				cat "Extension Files/heap.js"
+			}
+			if ($_ -match "function radixTrie()") {
+				cat "Extension Files/radixTrie.js"
+			}
+			if ($_ -match "function database()") {
+				cat "Extension Files/database.js"
+					echo "MePersonalityDatabase = MePersonalityWebSQLDatabase;"
+			}
+			if ($_ -match "function xhr()") {
+				cat "Extension Files/xhr.js"
+			}
+			if ($_ -match "function indexer()") {
+				cat "Extension Files/indexer.js"
+			}
+			if ($_ -match "/// BACKGROUND") {
+				cat "Extension Files/bg.js"
+			}
+			if ($_ -match "function bgMessageHandler()") {
+				cat "Extension Files/bgMessageHandler.js"
+			}
+		} | out-file "chrome/background.js" -encoding "utf8"
 	cp -r "Extension Files/marius" "chrome/"
-	echo ok
+		echo ok
 }
 
 function build_firefox_extension {
 	write-host "building firefox extension..." -nonewline
-	if (test-path "firefox") { rm -r -force "firefox" }
+		if (test-path "firefox") { rm -r -force "firefox" }
 	$dirs = "firefox", "firefox/data", "firefox/data/docs", "firefox/data/external", "firefox/data/external/jspos", "firefox/data/options", "firefox/data/options/ace", "firefox/packages", "firefox/background"
-	echo $dirs | % { if (!(test-path $_)) { [void](md $_) } }
+		echo $dirs | % { if (!(test-path $_)) { [void](md $_) } }
 	cat "Extension Files/firefox/package.json" | % {
 		$_ -replace "`"version`":", "`"version`": $version"
 	} | out-file "firefox/package.json" -encoding "ascii"
 	cp -r "Extension Files/external/browser-action-jplib" "firefox/packages/"
-	cp -r "Extension Files/external/toolbarwidget-jplib" "firefox/packages/"
-	cp -r "Extension Files/data/fonts" "firefox/data/options/"
-	cp "Extension Files/data/fonts.css" "firefox/data/options/"
-	cp "Extension Files/data/Brumo.png" "firefox/data/"
-	cp "Extension Files/data/logo-short-16.png" "firefox/data/"
-	cp "Extension Files/data/logo-short-48.png" "firefox/data/"
-	cp "Extension Files/data/logo-short-64.png" "firefox/data/"
-	cp "Extension Files/data/logo-short-128.png" "firefox/data/"
-	cp "Extension Files/external/jquery-2.0.3.min.js" "firefox/data/external/"
-	cp "Extension Files/external/jquery-ui-1.10.3.custom.min.js" "firefox/data/external/"
-	cp "Extension Files/external/sha256.js" "firefox/data/external/"
-	cp "Extension Files/external/sanitizer.js" "firefox/data/external/"
-	cp "Extension Files/external/readability.js" "firefox/data/external/"
-	cp "Extension Files/external/jspos/lexer.js" "firefox/data/external/jspos/"
-	cp "Extension Files/external/jspos/lexicon.js" "firefox/data/external/jspos/"
-	cp "Extension Files/external/jspos/POSTagger.js" "firefox/data/external/jspos/"
-	cp "Extension Files/net.js" "firefox/data/"
-	#cp "Extension Files/translator.js" "firefox/data/"
-	cp "Extension Files/ngrams.js" "firefox/data/"
-	cp "Extension Files/tagger.js" "firefox/data/"
-	cp "Extension Files/firefox/hidden.html" "firefox/data/"
-	cp "Extension Files/firefox/hidden.js" "firefox/data/"
-	cp "Extension Files/options/ace/ace.js" "firefox/data/options/ace/"
-	cp "Extension Files/options/ace/theme-textmate.js" "firefox/data/options/ace/"
-	cp "Extension Files/options/ace/theme-chrome.js" "firefox/data/options/ace/"
-	cp "Extension Files/options/ace/mode-html.js" "firefox/data/options/ace/"
-	cp "Extension Files/options/ace/mode-javascript.js" "firefox/data/options/ace/"
-	cp "Extension Files/options/ace/worker-javascript.js" "firefox/data/options/ace/"
-	cp "Extension Files/options/options.html" "firefox/data/options/"
-	cp "Extension Files/options/options.css" "firefox/data/options/"
-	cp "Extension Files/options/options.js" "firefox/data/options/"
-	cp "Extension Files/data/loader-black-64.gif" "firefox/data/options/"
-	cp "Extension Files/options/home.html" "firefox/data/options/"
-	cat "Extension Files/options/model.html" | % {
-		$_;	if ($_ -match "inlineScript") {
-			cat "Extension Files/options/model.js"
-		}
-	} | out-file "firefox/data/options/model.html" -encoding "utf8"
+		cp -r "Extension Files/external/toolbarwidget-jplib" "firefox/packages/"
+		cp -r "Extension Files/data/fonts" "firefox/data/options/"
+		cp "Extension Files/data/fonts.css" "firefox/data/options/"
+		cp "Extension Files/data/Brumo.png" "firefox/data/"
+		cp "Extension Files/data/logo-short-16.png" "firefox/data/"
+		cp "Extension Files/data/logo-short-48.png" "firefox/data/"
+		cp "Extension Files/data/logo-short-64.png" "firefox/data/"
+		cp "Extension Files/data/logo-short-128.png" "firefox/data/"
+		cp "Extension Files/external/jquery-2.0.3.min.js" "firefox/data/external/"
+		cp "Extension Files/external/jquery-ui-1.10.3.custom.min.js" "firefox/data/external/"
+		cp "Extension Files/external/sha256.js" "firefox/data/external/"
+		cp "Extension Files/external/sanitizer.js" "firefox/data/external/"
+		cp "Extension Files/external/readability.js" "firefox/data/external/"
+		cp "Extension Files/external/jspos/lexer.js" "firefox/data/external/jspos/"
+		cp "Extension Files/external/jspos/lexicon.js" "firefox/data/external/jspos/"
+		cp "Extension Files/external/jspos/POSTagger.js" "firefox/data/external/jspos/"
+		cp "Extension Files/net.js" "firefox/data/"
+#cp "Extension Files/translator.js" "firefox/data/"
+		cp "Extension Files/ngrams.js" "firefox/data/"
+		cp "Extension Files/tagger.js" "firefox/data/"
+		cp "Extension Files/firefox/hidden.html" "firefox/data/"
+		cp "Extension Files/firefox/hidden.js" "firefox/data/"
+		cp "Extension Files/options/ace/ace.js" "firefox/data/options/ace/"
+		cp "Extension Files/options/ace/theme-textmate.js" "firefox/data/options/ace/"
+		cp "Extension Files/options/ace/theme-chrome.js" "firefox/data/options/ace/"
+		cp "Extension Files/options/ace/mode-html.js" "firefox/data/options/ace/"
+		cp "Extension Files/options/ace/mode-javascript.js" "firefox/data/options/ace/"
+		cp "Extension Files/options/ace/worker-javascript.js" "firefox/data/options/ace/"
+		cp "Extension Files/options/options.html" "firefox/data/options/"
+		cp "Extension Files/options/options.css" "firefox/data/options/"
+		cp "Extension Files/options/options.js" "firefox/data/options/"
+		cp "Extension Files/data/loader-black-64.gif" "firefox/data/options/"
+		cp "Extension Files/options/home.html" "firefox/data/options/"
+		cat "Extension Files/options/model.html" | % {
+			$_;	if ($_ -match "inlineScript") {
+				cat "Extension Files/options/model.js"
+			}
+		} | out-file "firefox/data/options/model.html" -encoding "utf8"
 	cat "Extension Files/options/tagURLs.html" | % {
 		$_;	if ($_ -match "inlineScript") {
 			cat "Extension Files/options/tagURLs.js"
@@ -225,50 +275,50 @@ function build_firefox_extension {
 		}
 	} | out-file "firefox/data/options/addTagger.html" -encoding "utf8"
 	cp "Extension Files/options/extensionTemplate.js" "firefox/data/options/"
-	cp "Extension Files/options/taggerTemplate.js" "firefox/data/options/"
-	cp "Extension Files/docs/communicationAPI.html" "firefox/data/docs/"
-	cp "Extension Files/docs/databaseAPI.html" "firefox/data/docs/"
-	cp "Extension Files/docs/index.html" "firefox/data/docs/"
-	cp "Extension Files/docs/personalisationAPI.html" "firefox/data/docs/"
-	cat "Extension Files/content.js" | % {
-		$_;	if ($_ -match "/// MP_API") {
-			cat "Extension Files/api.js"
-		}
-		if ($_ -match "/// BROWSER_SPECIFIC") {
-			cat "Extension Files/firefox/content.js"
-		}
-	} | out-file "firefox/data/content.js" -encoding "utf8"
+		cp "Extension Files/options/taggerTemplate.js" "firefox/data/options/"
+		cp "Extension Files/docs/communicationAPI.html" "firefox/data/docs/"
+		cp "Extension Files/docs/databaseAPI.html" "firefox/data/docs/"
+		cp "Extension Files/docs/index.html" "firefox/data/docs/"
+		cp "Extension Files/docs/personalisationAPI.html" "firefox/data/docs/"
+		cat "Extension Files/content.js" | % {
+			$_;	if ($_ -match "/// MP_API") {
+				cat "Extension Files/api.js"
+			}
+			if ($_ -match "/// BROWSER_SPECIFIC") {
+				cat "Extension Files/firefox/content.js"
+			}
+		} | out-file "firefox/data/content.js" -encoding "utf8"
 	cp "Extension Files/extContent.js" "firefox/data/"
-	cat "Extension Files/background.js" | % {
-		$_;	if ($_ -match "function browser()") {
-			cat "Extension Files/browser.js"
-			echo "MePersonalityBrowser = MePersonalityMozillaFirefoxBrowser;"
-		}
-		if ($_ -match "function heap()") {
-			cat "Extension Files/heap.js"
-		}
-		if ($_ -match "function radixTrie()") {
-			cat "Extension Files/radixTrie.js"
-		}
-		if ($_ -match "function database()") {
-			cat "Extension Files/database.js"
-			echo "MePersonalityDatabase = MePersonalityFirefoxSQLiteStorageDatabase;"
-		}
-		if ($_ -match "function xhr()") {
-			cat "Extension Files/xhr.js"
-		}
-		if ($_ -match "function indexer()") {
-			cat "Extension Files/indexer.js"
-		}
-		if ($_ -match "/// BACKGROUND") {
-			cat "Extension Files/bg.js"
-		}
-		if ($_ -match "function bgMessageHandler()") {
-			cat "Extension Files/bgMessageHandler.js"
-		}
-	} | out-file "firefox/background/background.js" -encoding "utf8"
+		cat "Extension Files/background.js" | % {
+			$_;	if ($_ -match "function browser()") {
+				cat "Extension Files/browser.js"
+					echo "MePersonalityBrowser = MePersonalityMozillaFirefoxBrowser;"
+			}
+			if ($_ -match "function heap()") {
+				cat "Extension Files/heap.js"
+			}
+			if ($_ -match "function radixTrie()") {
+				cat "Extension Files/radixTrie.js"
+			}
+			if ($_ -match "function database()") {
+				cat "Extension Files/database.js"
+					echo "MePersonalityDatabase = MePersonalityFirefoxSQLiteStorageDatabase;"
+			}
+			if ($_ -match "function xhr()") {
+				cat "Extension Files/xhr.js"
+			}
+			if ($_ -match "function indexer()") {
+				cat "Extension Files/indexer.js"
+			}
+			if ($_ -match "/// BACKGROUND") {
+				cat "Extension Files/bg.js"
+			}
+			if ($_ -match "function bgMessageHandler()") {
+				cat "Extension Files/bgMessageHandler.js"
+			}
+		} | out-file "firefox/background/background.js" -encoding "utf8"
 	cp -r "Extension Files/marius" "firefox/data/"
-	echo ok
+		echo ok
 }
 
 build_chrome_extension

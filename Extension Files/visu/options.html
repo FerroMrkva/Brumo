@@ -1,0 +1,31 @@
+<script src="data.js">
+</script>
+<script src="spreadact.js"></script>
+
+<script>
+function createCORSRequest(method, url){
+    var xhr = new XMLHttpRequest();
+    if ("withCredentials" in xhr){
+        xhr.open(method, url, true);
+    } else if (typeof XDomainRequest != "undefined"){
+        xhr = new XDomainRequest();
+        xhr.open(method, url);
+    } else {
+        xhr = null;
+    }
+    return xhr;
+}
+
+var request = createCORSRequest("get", "http://localhost:8080/get_words");
+if (request){
+    request.onload = function(response){
+        //do something with request.responseText
+        console.log(respose);
+    };
+    request.send();
+}
+</script>
+
+<p>
+tada
+</p>
