@@ -17,7 +17,8 @@ function update_version_number {
 }
 $version = update_version_number
 echo "building version $version"
-echo ('"',$version,'"' -Join "") | out-file "Extension Files/version.txt" -encoding "utf8"
+$version = '"' + $version + '"'
+echo $version | out-file "Extension Files/version.txt" -encoding "utf8"
 
 function build_chrome_extension {
 	write-host "building chrome extension..." -nonewline
