@@ -62,19 +62,49 @@ var MePersonalityGoogleChromeBrowser = function () {
 			params.text = '';
 		if (!params.startTime)
 			params.startTime = 0;
+		var getVisits=params.getVisits;
+		if (params.getVisits) delete params.getVisits;
 		chrome.history.search(params, function (historyItems) {
 			var results = [];
-			for (var i = 0; i < historyItems.length; ++i) {
+			(function rec(i){
+				if (i==historyItems.length){
+					if (getVisits){
+						results.sort(function(a,b){
+							return b.time - a.time;
+						});
+					}
+					callback(results);
+					return;
+				}
 				var node = historyItems[i];
-				results.push({
-					id: node.id,
-					title: node.title,
-					url: node.url,
-					visitCount: node.visitCount,
-					lastVisitTime: node.lastVisitTime
-				});
-			}
-			callback(results);
+				if (getVisits){
+					chrome.history.getVisits({'url':node.url},function(visits){
+						visits.forEach(function(visit){
+							if (visit.visitTime>=params.startTime){
+								if (!params.endTime||visit.visitTime<params.endTime){
+									results.push({
+										id: visit.visitId,
+										title: node.title,
+										url: node.url,
+										visitCount: node.visitCount,
+										time: visit.visitTime
+									});
+								}
+							}
+						});
+						rec(i+1);
+					});
+				} else {
+					results.push({
+						id: node.id,
+						title: node.title,
+						url: node.url,
+						visitCount: node.visitCount,
+						lastVisitTime: node.lastVisitTime
+					});
+					rec(i+1);
+				}
+			})(0);
 		});
 	}
 	this.xhr = {
@@ -664,6 +694,8 @@ var MePersonalityMozillaFirefoxBrowser = function () {
 		queryOptions.sortingMode = queryOptions.SORT_BY_DATE_DESCENDING;
 		if (params.maxResults)
 			queryOptions.maxResults = params.maxResults;
+		if (params.getVisits)
+			queryOptions.resultType = queryOptions.RESULTS_AS_VISIT;
 		var result = historyService.executeQuery(query, queryOptions);
 		var cont = result.root;
 		cont.containerOpen = true;
@@ -671,35 +703,60 @@ var MePersonalityMozillaFirefoxBrowser = function () {
 		(function go(i) {
 			if (i == cont.childCount) {
 				cont.containerOpen = false;
+				if (params.getVisits){
+					results.sort(function(a,b){
+						return b.time - a.time;
+					});
+				}
 				callback(results);
 				return;
 			}
 			var node = cont.getChild(i);
-			MePersonality.db.get('url', node.uri, function (urlId) {
-				if (urlId) {
-					results.push({
-						id: urlId,
+			var resultType='url';
+			if (params.getVisits){
+				resultType='visit';
+				if (node.time<params.startTime||(params.endTime&&node.time>=params.endTime)){
+					go(i+1);
+					return;
+				}
+			}
+			MePersonality.db.get(resultType, node.uri, function (itemId) {
+				if (itemId) {
+					var result={
+						id: itemId,
 						title: node.title,
 						url: node.uri,
-						visitCount: node.accessCount,
-						lastVisitTime: node.time
-					});
-					go(i + 1);
+						visitCount: node.accessCount
+					};
+					if (params.getVisits){
+						result.time = node.time;
+					}
+					else {
+						result.lastVisitTime = node.time;
+					}
+					results.push(result);
+					go(i+1);
 				}
 				else {
-					MePersonality.db.get('url', 'urlCount', function (urlCount) {
-						if (!urlCount) urlCount = 0;
-						urlId = urlCount + 1;
-						MePersonality.db.set('url', node.uri, urlId, function () {
-							MePersonality.db.set('url', 'urlCount', urlCount + 1, function () {
-								results.push({
-									id: urlId,
+					MePersonality.db.get(resultType, 'count', function (itemCount) {
+						if (!itemCount) itemCount = 0;
+						itemId = itemCount + 1;
+						MePersonality.db.set(resultType, node.uri, itemId, function () {
+							MePersonality.db.set(resultType, 'count', itemCount + 1, function () {
+								var result={
+									id: itemId,
 									title: node.title,
 									url: node.uri,
-									visitCount: node.accessCount,
-									lastVisitTime: node.time
-								});
-								go(i + 1);
+									visitCount: node.accessCount
+								};
+								if (params.getVisits){
+									result.time = node.time;
+								}
+								else {
+									result.lastVisitTime = node.time;
+								}
+								results.push(result);
+								go(i+1);
 							});
 						});
 					});
