@@ -62,6 +62,8 @@ var MePersonalityGoogleChromeBrowser = function () {
 			params.text = '';
 		if (!params.startTime)
 			params.startTime = 0;
+		if (!params.maxResults)
+			params.maxResults=100;
 		var getVisits=params.getVisits;
 		if (params.getVisits) delete params.getVisits;
 		chrome.history.search(params, function (historyItems) {
@@ -73,7 +75,7 @@ var MePersonalityGoogleChromeBrowser = function () {
 							return b.time - a.time;
 						});
 					}
-					callback(results);
+					callback(results.slice(0,params.maxResults));
 					return;
 				}
 				var node = historyItems[i];
@@ -690,10 +692,11 @@ var MePersonalityMozillaFirefoxBrowser = function () {
 			query.endTimeReference = query.TIME_RELATIVE_EPOCH;
 			query.endTime = params.startTime;
 		}
+		if (!params.maxResults)
+			params.maxResults=100;
 		var queryOptions = historyService.getNewQueryOptions();
 		queryOptions.sortingMode = queryOptions.SORT_BY_DATE_DESCENDING;
-		if (params.maxResults)
-			queryOptions.maxResults = params.maxResults;
+		queryOptions.maxResults = params.maxResults;
 		if (params.getVisits)
 			queryOptions.resultType = queryOptions.RESULTS_AS_VISIT;
 		var result = historyService.executeQuery(query, queryOptions);
@@ -708,7 +711,7 @@ var MePersonalityMozillaFirefoxBrowser = function () {
 						return b.time - a.time;
 					});
 				}
-				callback(results);
+				callback(results.slice(0,params.maxResults));
 				return;
 			}
 			var node = cont.getChild(i);

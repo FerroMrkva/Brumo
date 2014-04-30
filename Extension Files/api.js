@@ -65,6 +65,16 @@ var MePersonality = function () {
 			        count: query.maxResults
 			    }, callback);
 			},
+        indexHistoryByTime:
+			function (query, callback) {
+			    if (!query)
+			        query = {};
+			    sendMessage({
+			        type: 'indexer',
+			        command: 'indexHistoryByTime',
+			        params: query
+			    }, callback);
+			},
         getUserTags:
 			function (query, callback) {
 			    if (!query)
@@ -77,6 +87,20 @@ var MePersonality = function () {
 			        type: 'indexer',
 			        command: 'getUserTags',
 			        count: query.maxResults
+			    }, callback);
+			},
+        getUserTimedTags:
+			function (query, callback) {
+			    if (!query)
+			        query = {};
+			    if (!callback)
+			        callback = function (userTimedTags) {
+			            console.log(userTimedTags);
+			        };
+			    sendMessage({
+			        type: 'indexer',
+			        command: 'getUserTimedTags',
+			        params: query
 			    }, callback);
 			},
         getUserTagsByDomain:

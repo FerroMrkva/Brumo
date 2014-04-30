@@ -28,6 +28,12 @@ PublicJS.handleMessage = function (request, sendResponse) {
         if (request.command == 'indexHistory') {
             MePersonality.indexer.indexHistory(request.countLimit);
         }
+        else if (request.command == 'indexHistoryByTime') {
+            MePersonality.indexer.indexHistoryByTime(request.params,sendResponse);
+        }
+        else if (request.command == 'getUserTimedTags') {
+            MePersonality.indexer.getUserTimedTags(request.params,sendResponse);
+        }
         else if (request.command == 'clearIndexer') {
             MePersonality.indexer.clear();
         }

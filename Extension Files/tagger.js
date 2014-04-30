@@ -946,7 +946,7 @@ MePersonalityTagger = function () {
 					if (tag.substr(0, 2) != 'NN' || stopword.test(word) || taggedWords[i][0].length<2)
 						continue;
 					var id = vertexId[word];
-					if (!id) {
+					if (typeof(id)!='number') {
 						id = vertexId[word] = ++id_count;
 						vertexTag[id] = tag;
 						vertexValue[id] = [0, 1];
@@ -1030,7 +1030,7 @@ MePersonalityTagger = function () {
 				var words = getWords(text);
 				var taggedWords = tagger.tag(words);
 				var phrases = getPhrases(taggedWords);
-				console.log(phrases);
+				//console.log(phrases);
 				// zrataj pocet vyskytov slov
 				var counter = {};
 				phrases.forEach(function(phrase){
@@ -1117,14 +1117,14 @@ MePersonalityTagger = function () {
 				}
 				ret['tags'] = tags;
 				ret['rels'] = rels;
-				console.log('got tags for ' + url);
-				console.log(tags);
+				//console.log('got tags for ' + url);
+				//console.log(tags);
 				//debug('tagger ok');
 				handler(ret);
 				//console.log(JSON.stringify(ret));
 			}
 
-			this.getTags2 = function (url, html, handler) {
+			this.getTags2 = function (url, html, callback) {
 				//debug('extracting article');
 				// extract article from html
 				var text = MePersonality.tagger.extractArticle(html);
@@ -1139,18 +1139,19 @@ MePersonalityTagger = function () {
 					for (var i = 0; i < languages.length; ++i) {
 					if (new RegExp('/[^/]+\\.' + languages[i][0] + '/').test(url)) {
 					MePersonality.translator.translate(text, function (translation) {
-					MePersonality.tagger.getTags3(url, html, translation, handler);
+					MePersonality.tagger.getTags3(url, html, translation, callback);
 					}, languages[i][1]);
 					return;
 					}
 					}*/
 				if (MePersonality.tagger.isEnglish(text)) {
-					MePersonality.tagger.getTags3(url, html, text, handler);
+					MePersonality.tagger.getTags3(url, html, text, callback);
 					return;
 				}
 				/*MePersonality.translator.translate(text, function (translation) {
-					MePersonality.tagger.getTags3(url, html, translation, handler);
+					MePersonality.tagger.getTags3(url, html, translation, callback);
 					});*/
+				callback({ 'url': url, 'tags': [] });
 			}
 
 			this.getTags = function (params, callback) {
@@ -1186,90 +1187,104 @@ MePersonalityTagger = function () {
 					callback({ 'error': 'The requested URL is not allowed' });
 					return;
 				}
-				if (!params.text) {
-					if (!params.html) {
-						if (MePersonality.browser.debug) {
-							// TODO: if stored ...
+				MePersonality.db.get('keyword_cache',url,function(response){
+					if (response){
+						callback(response);
+						return;
+					}
+					if (!params.text) {
+						if (!params.html==undefined) {
+							if (MePersonality.browser.debug) {
+								// TODO: if stored ...
+							}
+							MePersonality.browser.xhr.get({ 'url': url }, function (response) {
+								var contentType = response.headers['content-type'] || response.headers['Content-Type'];
+								if (contentType && contentType.indexOf('text') >= 0) {
+									params.html = response.text;
+									MePersonality.tagger.getTags(params, callback);
+								}
+								else {
+									callback({ 'error': 'Non-textual content' });
+								}
+							});
+							return;
 						}
-						MePersonality.browser.xhr.get({ 'url': url }, function (response) {
-							var contentType = response.headers['content-type'] || response.headers['Content-Type'];
-							if (contentType && contentType.indexOf('text') >= 0) {
-								params.html = response.text;
-								MePersonality.tagger.getTags(params, callback);
+						if (!params.html){
+							callback({ 'error': 'Empty content' });
+							return;
+						}
+						var text = MePersonality.tagger.extractArticle(params.html);
+						if (!text)
+					text = MePersonality.tagger.stripHTML(params.html);
+						params.text = text;
+						MePersonality.tagger.getTags(params, callback);
+						return;
+					}
+					var html = params.html;
+					var text = params.text;
+					var lang = MePersonality.tagger.getLanguage(text);
+					params.language = lang.language;
+					//debug('tagging ' + url);
+					for (var taggerId in taggers) {
+						var tagger = taggers[taggerId];
+						if (tagger.isValidURL().test(url)) {
+							try {
+								tagger.tag(params, callback); // TODO: add API functions to params object
+							} catch (e) {
+								console.error(tagger.name + ' (' + taggerId + ') failed to tag ' + url);
+								console.error(e);
+								callback({
+									'error': tagger.name + ' failed to tag ' + url,
+									'cause': e
+								});
 							}
-							else {
-								callback({ 'error': 'Non-textual content' });
+							return;
+						}
+					}
+					console.log('language: ' + params.language);
+					if (params.language != 'en'){
+						callback({ 'error': 'Non-english text' });
+						return;
+					}
+					if (searchURL.test(url)) {
+						// extrahuj query
+						var q = decodeURIComponent(query.exec(url)).
+							substr(3).toLowerCase();
+						if (q.indexOf(' ') != -1)
+							q = q.split(' ');
+						else
+							q = q.split('+');
+						var tags = [], rels = [];
+						for (var i = 0; i < q.length; ++i)
+							if (!stopword.test(q[i])) {
+								tags.push(q[i]);
+								rels.push(1);
 							}
+						callback({
+							'url': url, 'title': 'Search for ' + q.join(' '),
+							'tags': tags, 'rels': rels
 						});
 						return;
 					}
-					var text = MePersonality.tagger.extractArticle(params.html);
-					if (!text)
-						text = MePersonality.tagger.stripHTML(params.html);
-					params.text = text;
-					MePersonality.tagger.getTags(params, callback);
-					return;
-				}
-				var html = params.html;
-				var text = params.text;
-				var lang = MePersonality.tagger.getLanguage(text);
-				params.language = lang.language;
-				//debug('tagging ' + url);
-				for (var taggerId in taggers) {
-					var tagger = taggers[taggerId];
-					if (tagger.isValidURL().test(url)) {
-						try {
-							tagger.tag(params, callback); // TODO: add API functions to params object
-						} catch (e) {
-							console.error(tagger.name + ' (' + taggerId + ') failed to tag ' + url);
-							console.error(e);
-							callback({
-								'error': tagger.name + ' failed to tag ' + url,
-								'cause': e
-							});
-						}
+					if (params.getSynsets) {
+						var words = getWords(text);
+						params.words = words;
+						This.wordnet.synsetRank(params, callback);
 						return;
 					}
-				}
-				console.log('language: ' + params.language);
-				if (params.language != 'en'){
-					callback({ 'error': 'Non-english text' });
-					return;
-				}
-				if (searchURL.test(url)) {
-					// extrahuj query
-					var q = decodeURIComponent(query.exec(url)).
-						substr(3).toLowerCase();
-					if (q.indexOf(' ') != -1)
-						q = q.split(' ');
-					else
-						q = q.split('+');
-					var tags = [], rels = [];
-					for (var i = 0; i < q.length; ++i)
-						if (!stopword.test(q[i])) {
-							tags.push(q[i]);
-							rels.push(1);
-						}
-					callback({
-						'url': url, 'title': 'Search for ' + q.join(' '),
-						'tags': tags, 'rels': rels
+					MePersonality.tagger.getTags3(url, html, text, function(results){
+						MePersonality.db.set('keyword_cache',url,results,function(){
+							callback(results);
+						});
 					});
-					return;
-				}
-				if (params.getSynsets) {
-					var words = getWords(text);
-					params.words = words;
-					This.wordnet.synsetRank(params, callback);
-					return;
-				}
-				MePersonality.tagger.getTags3(url, html, text, callback);
-				//xhrGet(url, null, function (body, headers) {
-				//	if (headers && headers.indexOf('Content-Type: text/html') != -1)
-				//		MePersonality.tagger.getTags2(url, body, callback);
-				//	else {
-				//		callback({ 'url': url, tags: [] });
-				//	}
-				//});
+					//xhrGet(url, null, function (body, headers) {
+					//	if (headers && headers.indexOf('Content-Type: text/html') != -1)
+					//		MePersonality.tagger.getTags2(url, body, callback);
+					//	else {
+					//		callback({ 'url': url, tags: [] });
+					//	}
+					//});
+				});
 			}
 
 			//loadTaggers();

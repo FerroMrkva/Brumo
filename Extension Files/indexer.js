@@ -3,6 +3,7 @@
 MePersonalityIndexer = function () {
 	var userDomains = {};
 	var userDomainsCount = 0;
+	var userTimedTags = [];
 	var userTags = new MePersonalityRadixTrie(); // user interests
 	// userTags.value = {maxRel, rel, urls}
 	var domainTags = new MePersonalityRadixTrie(); // user interests indexed by domain
@@ -17,6 +18,7 @@ MePersonalityIndexer = function () {
 		state = {};
 		userDomains = {};
 		userDomainsCount = 0;
+		userTimedTags = [];
 		userTags = new MePersonalityRadixTrie();
 		domainTags = new MePersonalityRadixTrie();
 	}
@@ -96,6 +98,11 @@ MePersonalityIndexer = function () {
 		if (!node.value.minRel || node.value.minRel > v.value.rel)
 			node.value.minRel = v.value.rel;
 		});
+	}
+
+	this.addTimedTag = function(params,callback){
+		userTimedTags.push(params);
+		if (callback) callback();
 	}
 
 	this.addTag = function (params) {
@@ -321,6 +328,50 @@ MePersonalityIndexer = function () {
 		return v.value.visits;
 	}
 
+	this.getUserTimedTags = function (params, callback) {
+		if (!params.count){
+			params.count=20;
+		}
+		if (!params.unitSize){
+			params.unitSize=24*60*60*1000; // one day in milliseconds
+		}
+		if (!params.unitCount){
+			params.unitCount=5;
+		}
+		if (!params.startTime){
+			if (!params.endTime){
+				var x=new Date();
+				params.endTime=x.valueOf()-(x.valueOf()-x.getTimezoneOffset()*60000)%params.unitSize+params.unitSize;
+			}
+			params.startTime=params.endTime-params.unitSize*params.unitCount;
+		}
+		var results=[];
+		for(var i=0;i<params.unitCount;++i){
+			results.push({});
+		}
+		userTimedTags.forEach(function(item){
+			var k=Math.floor((item.time-params.startTime)/params.unitSize);
+			if (k>=0&&k<params.unitCount){
+				if (typeof(results[k][item.tag])!='number'){
+					results[k][item.tag]=item.relevancy;
+				} else {
+					results[k][item.tag]+=item.relevancy;
+				}
+			}
+		});
+		for(var i=0;i<params.unitCount;++i){
+			var sorted=[];
+			for(var key in results[i]){
+				sorted.push([key,results[i][key]]);
+			}
+			sorted.sort(function(a,b){
+				return b[1]-a[1];
+			});
+			results[i]=sorted.slice(0,params.count);
+		}
+		callback(results);
+	}
+
 	this.getUserTags = function (count, callback) {
 		if (!count)
 			count = 10;
@@ -444,7 +495,8 @@ MePersonalityIndexer = function () {
 		state.cancelled = false;
 		// TODO: clear the database, check for last update, etc.
 		MePersonality.browser.searchHistory({
-			'maxResults': countLimit
+			'maxResults': countLimit,
+			'getVisits': 1
 		},
 		function (historyItems) {
 			state.total = historyItems.length;
@@ -454,16 +506,14 @@ MePersonalityIndexer = function () {
 			var startTime = new Date();
 			var t, i = 0;
 			var MAXCONCURRENT = 5;
-			function nextItem() {
+			(function nextItem() {
 				if (state.cancelled || i == historyItems.length) {
-					console.log("indexer.save");
-					MePersonality.indexer.save();
 					return;
 				}
 				if (i - state.current < MAXCONCURRENT) {
 					console.log('i='+i);
 					console.log(historyItems[i]);
-					var count = historyItems[i].visitCount;
+					var count = 1; //historyItems[i].visitCount;
 					if (!count) count = 1;
 					var urlId = historyItems[i].id;
 					//MePersonality.db.set('url',urlId,historyItems[i].url);
@@ -475,6 +525,10 @@ MePersonalityIndexer = function () {
 					}, function () {
 						state.current++;
 						state.timer = new Date() - startTime;
+						if (state.current==historyItems.length) {
+							console.log("indexer.save");
+							MePersonality.indexer.save();
+						}
 					});
 					++i;
 				}
@@ -482,8 +536,77 @@ MePersonalityIndexer = function () {
 					t = setTimeout(nextItem, 10);
 				else
 					t = setTimeout(nextItem, 0);
-			}
-			nextItem();
+			})();
+		});
+	}
+
+	this.indexHistoryByTime = function(params,callback){
+		if (!params.maxResults)
+			params.maxResults = 1000;
+		if (params.clearHistoryCache){
+			MePersonality.db.clear('keyword_cache',function(){
+				delete params.clearHistoryCache;
+				MePersonality.indexer.indexHistoryByTime(params,callback);
+			});
+			return;
+		}
+		userTimedTags = [];
+		state.cancelled = false;
+		MePersonality.browser.searchHistory({
+			'maxResults': params.maxResults,
+			'getVisits': 1
+		},function(historyItems){
+			state.total = historyItems.length;
+			state.current = 0;
+			state.timer = 0;
+			state.lastId = historyItems[0].id;
+			var startTime = new Date();
+			var t, i = 0;
+			var MAXCONCURRENT = 5;
+			(function nextItem() {
+				if (state.cancelled || i == historyItems.length) {
+					if (callback) callback();
+					return;
+				}
+				if (i - state.current < MAXCONCURRENT) {
+					if (i%10==0)
+					console.log('i='+i);
+					//console.log(historyItems[i]);
+					var visitId = historyItems[i].id;
+					var url = historyItems[i].url;
+					var time = historyItems[i].time;
+					MePersonality.tagger.getTags({
+						'url': url
+					}, function (results) {
+						//console.log(results);
+						var tags=results.tags;
+						var rels=results.rels;
+						if (tags){
+							for(var j=0;j<tags.length;++j){
+								MePersonality.indexer.addTimedTag({
+									'tag': tags[j],
+									//'urlId': urlId,
+									'url': results.url,
+									'title': results.title,
+									'relevancy': rels[j],
+									'time': time
+								});
+							}
+						}
+						state.current++;
+						state.timer = new Date() - startTime;
+						if (state.current==historyItems.length) {
+							console.log("indexer.save");
+							MePersonality.indexer.save();
+						}
+					});
+					++i;
+				}
+				if (i - state.current == MAXCONCURRENT)
+					t = setTimeout(nextItem, 10);
+				else
+					t = setTimeout(nextItem, 0);
+			})();
 		});
 	}
 
