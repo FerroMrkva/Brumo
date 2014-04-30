@@ -595,7 +595,8 @@ function installLocalExtensions(callback, onerror) {
 	}
 	var extList = [
 		//"tagger_feedback",
-		"timedqueries"
+		"timedqueries",
+		"visu"
 		];
 	(function next(i) {
 		installLocalExtension(extList[i], function () {

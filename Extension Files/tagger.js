@@ -1097,6 +1097,7 @@ MePersonalityTagger = function () {
 				//debug('merging results');
 				delete counter[''];
 				for (var word in counter) {
+					if (unescape(word)!=word) continue;
 					sorted.push([counter[word], unescape(word)]);
 				}
 				sorted.sort(function (a, b) {

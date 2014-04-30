@@ -367,7 +367,11 @@ MePersonalityIndexer = function () {
 			sorted.sort(function(a,b){
 				return b[1]-a[1];
 			});
-			results[i]=sorted.slice(0,params.count);
+			results[i]={'keywords':[],'relevance':[]};
+			sorted.slice(0,params.count).forEach(function(item){
+				results[i].keywords.push(item[0]);
+				results[i].relevance.push(item[1]);
+			});
 		}
 		callback(results);
 	}
@@ -575,30 +579,33 @@ MePersonalityIndexer = function () {
 					var visitId = historyItems[i].id;
 					var url = historyItems[i].url;
 					var time = historyItems[i].time;
-					MePersonality.tagger.getTags({
-						'url': url
-					}, function (results) {
-						//console.log(results);
-						var tags=results.tags;
-						var rels=results.rels;
-						if (tags){
-							for(var j=0;j<tags.length;++j){
-								MePersonality.indexer.addTimedTag({
-									'tag': tags[j],
-									//'urlId': urlId,
-									'url': results.url,
-									'title': results.title,
-									'relevancy': rels[j],
-									'time': time
-								});
+					MePersonality.browser.xhr.get({ 'url': url }, function (response) {
+						MePersonality.tagger.getTags({
+							'url': url,
+							'html': response.text
+						}, function (results) {
+							console.log(results);
+							var tags=results.tags;
+							var rels=results.rels;
+							if (tags){
+								for(var j=0;j<tags.length;++j){
+									MePersonality.indexer.addTimedTag({
+										'tag': tags[j],
+										//'urlId': urlId,
+										'url': results.url,
+										'title': results.title,
+										'relevancy': rels[j],
+										'time': time
+									});
+								}
 							}
-						}
-						state.current++;
-						state.timer = new Date() - startTime;
-						if (state.current==historyItems.length) {
-							console.log("indexer.save");
-							MePersonality.indexer.save();
-						}
+							state.current++;
+							state.timer = new Date() - startTime;
+							if (state.current==historyItems.length) {
+								console.log("indexer.save");
+								MePersonality.indexer.save();
+							}
+						});
 					});
 					++i;
 				}

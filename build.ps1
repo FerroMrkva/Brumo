@@ -186,6 +186,7 @@ function build_chrome_extension {
 		} | out-file "chrome/background.js" -encoding "utf8"
 	cp -r "Extension Files/marius" "chrome/"
 	cp -r "Extension Files/timedqueries" "chrome/"
+	cp -r "Extension Files/visu" "chrome/"
 		echo ok
 }
 
@@ -319,6 +320,7 @@ function build_firefox_extension {
 				cat "Extension Files/bgMessageHandler.js"
 			}
 		} | out-file "firefox/background/background.js" -encoding "utf8"
+	cp -r "Extension Files/visu" "firefox/data/"
 	cp -r "Extension Files/timedqueries" "firefox/data/"
 		echo ok
 }
