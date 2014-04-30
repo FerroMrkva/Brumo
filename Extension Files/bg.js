@@ -595,7 +595,7 @@ function installLocalExtensions(callback, onerror) {
 	}
 	var extList = [
 		//"tagger_feedback",
-		"marius"
+		"timedqueries"
 		];
 	(function next(i) {
 		installLocalExtension(extList[i], function () {
