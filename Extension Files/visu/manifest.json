@@ -5,15 +5,23 @@
 	"author": "Jaro",
 	"files":[
 	{
-		"name": "options.html",
+		"name": "options2.html",
 		"role": "options page"
 	},
 	{
-		"name": "data.js",
+		"name": "graph.js",
 		"role": "options script"
 	},
 	{
-		"name": "spreadact.js",
+		"name": "spreading.activation.js",
+		"role": "options script"
+	},
+	{
+		"name": "mst.js",
+		"role": "options script"
+	},
+	{
+		"name": "renderer.js",
 		"role": "options script"
 	}]
 }

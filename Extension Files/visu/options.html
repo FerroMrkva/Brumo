@@ -1,31 +1,406 @@
 <script src="data.js">
 </script>
+<script src="jquery-2.1.0.js">
+</script>
 <script src="spreadact.js"></script>
 
+
+<canvas id="canvas" width="900" height="700" style="border:1px solid #000000;"></canvas>
+
+
+
 <script>
-function createCORSRequest(method, url){
-    var xhr = new XMLHttpRequest();
-    if ("withCredentials" in xhr){
-        xhr.open(method, url, true);
-    } else if (typeof XDomainRequest != "undefined"){
-        xhr = new XDomainRequest();
-        xhr.open(method, url);
-    } else {
-        xhr = null;
-    }
-    return xhr;
-}
-
-var request = createCORSRequest("get", "http://localhost:8080/get_words");
-if (request){
-    request.onload = function(response){
-        //do something with request.responseText
-        console.log(respose);
-    };
-    request.send();
-}
+	var canvas = document.getElementById("canvas");
+	var context = canvas.getContext('2d');
+	//context.font = "30px Arial";
+	
+	function getPopularity(keyword){
+		for(var j=0;j<data.keywords.length;j++){		
+			//console.log(data.keywords[j]);
+			if(data.keywords[j]==keyword){
+				return data.relevance[j];
+			}
+		}
+		return -1;
+	}
+	
+	function getMaxRelevanceIndex(keyword){
+		var max=-1;
+		var ind=-1;
+		var k=-1;
+		//console.log(keyword);
+		//console.log(data);
+		for(var j=0;j<data.keywords.length;j++){		
+			//console.log(data.keywords[j]);
+			if(data.keywords[j]==keyword){
+				k=j;			
+				break;
+			}
+		}
+		for(var i=0;i<5;i++){			
+			switch(i){
+				case 0:{
+					if(data1.relevance[k]>max){
+						max=data1.relevance[k];
+						ind=i+1;
+					}
+					break;
+				}
+				case 1:{
+					if(data2.relevance[k]>max){
+						max=data1.relevance[k];
+						ind=i+1;
+					}
+					break;
+				}
+				case 2:{
+					if(data3.relevance[k]>max){
+						max=data1.relevance[k];
+						ind=i+1;
+					}
+					break;
+				}
+				case 3:{
+					if(data4.relevance[k]>max){
+						max=data1.relevance[k];
+						ind=i+1;
+					}
+					break;
+				}
+				case 4:{
+					if(data5.relevance[k]>max){
+						max=data1.relevance[k];
+						ind=i+1;
+					}
+					break;
+				}
+			}
+		}
+		return ind;
+	}
+	/*
+	for(var i=0;i<fired.length;i++){
+		console.log(getMaxRelevanceIndex(fired[i].k));
+	}
+	*/
+	
+	/*
+		a-point, [x0,y0]
+		b-point, [x1,y1]
+	*/
+	function dist(a,b){
+		var t1=Math.abs(a[0]-b[0]);
+		var t2=Math.abs(a[1]-b[1])
+		return Math.sqrt(t1*t1+t2*t2);
+	}
+	function drawKeyword(context,keyword,pop,point){
+        //console.log(pop*maxFontSize);
+		context.font = getFontSize(keyword)+"px Arial";		
+		context.fillText(keyword,point[0],point[1]);
+	}
+	
+	//todo
+	var step=800/6;
+	var middle=600/2;
+	var maxFontSize=36;
+	var prev=0;
+	var points=new Array();
+	var off=200;	
+	
+	for(var i=0;i<2;i++){
+		//var offset=getMaxRelevanceIndex(fired[i].k);
+		//var pop=getPopularity(fired[i].k);		
+		if(i==0){
+			var offset=getMaxRelevanceIndex(edges[0].u);
+			var pop=getPopularity(edges[0].u);		
+			var tmp_i=getIndex(edges[0].u);
+			var keyword=edges[0].u;
+			points.push([(offset)*step,middle+A[prev][tmp_i]*off,keyword,i]);
+		}
+		else{
+			var offset=getMaxRelevanceIndex(edges[0].v);
+			var pop=getPopularity(edges[0].v);		
+			var tmp_i=getIndex(edges[0].v);
+			var keyword=edges[0].v;
+			points.push([points[0][0]+A[prev][tmp_i]*off,points[0][1],keyword,i]);
+		}
+		
+		//console.log(offset);
+		//points.push([(offset)*step,middle+A[prev][tmp_i]*off]);
+		//points.push([10,0+i*600]);
+		
+		//drawKeyword(context,keyword,pop,points[points.length-1]);
+		prev=tmp_i;		
+	}
+	
+	//console.log(points);
+	//console.log(dist(points[0],points[1]));
+	
+	
+	for(var i=1;i<edges.length;i++){
+		var point1=points[points.length-2];
+		var point2=points[points.length-1];
+		var tmp_i=getIndex(edges[i].v);
+		
+		var r1=A[0][tmp_i]*off;
+		var r2=edges[i].w*off		
+		var keyword=edges[i].v;
+		
+		var d=dist(point1,point2);
+		var offsetStepped=getMaxRelevanceIndex(keyword)*step;
+		var pop=getPopularity(keyword);		
+		
+		if(Math.abs(r1-r2)>d){
+			console.log('medzikruzie');
+			points.push([(point1[0]+point2[0])/2,(point1[1]+point2[1])/2,keyword,i]);
+			//points.push([point2[0]+d,point2[1]+d]);
+			/*
+			var a=d/2;
+			var b=d-a;
+			var tmpPoint=[point1[0]+a*((point2[0]-point1[0])/d),point1[1]+a*((point2[1]-point1[1])/d)];
+			var h=d/20;
+			
+			var intersection1=[tmpPoint[0]+(h/d)*(point2[1]-point1[1]),tmpPoint[1]-(h/d)*(point2[0]-point1[0])];
+			var intersection2=[tmpPoint[0]-(h/d)*(point2[1]-point1[1]),tmpPoint[1]+(h/d)*(point2[0]-point1[0])];
+			
+			if(intersection1[0]-offsetStepped<=intersection2[0]-offsetStepped){
+				points.push(intersection1);
+			}
+			else{
+				points.push(intersection2);
+			}
+			*/
+		}		
+		else{
+			if(r1+r2<d){
+				console.log('na priamke');
+				points.push([(point1[0]+point2[0])/2,(point1[1]+point2[1])/2,keyword,i]);
+				//points.push([point2[0]+d/2,point2[1]+d/2]);		
+				/*				
+				var a=d/3;
+				var b=d-a;
+				var tmpPoint=[point1[0]+a*((point2[0]-point1[0])/d),point1[1]+a*((point2[1]-point1[1])/d)];
+				var h=d/10;
+				
+				var intersection1=[tmpPoint[0]+(h/d)*(point2[1]-point1[1]),tmpPoint[1]-(h/d)*(point2[0]-point1[0])];
+				var intersection2=[tmpPoint[0]-(h/d)*(point2[1]-point1[1]),tmpPoint[1]+(h/d)*(point2[0]-point1[0])];
+				
+				if(intersection1[0]-offsetStepped<=intersection2[0]-offsetStepped){
+					points.push(intersection1);
+				}
+				else{
+					points.push(intersection2);
+				}
+				*/
+			}
+			else{
+				if(r1+r2-d===0.001){
+					console.log('jeden priesecnik s toleranciou');
+					points.push([point1[0]+(r1/d)*(point2[0]-point1[0]),point1[1]+(r1/d)*(point2[1]-point1[1]),keyword,i]);
+				}	
+				else{
+					console.log('2 priesecniky');
+					var a=(r1*r1-r2*r2+d*d)/(2*d);
+					var b=d-a;
+					var tmpPoint=[point1[0]+a*((point2[0]-point1[0])/d),point1[1]+a*((point2[1]-point1[1])/d)];
+					var h=Math.sqrt(r1*r1-a*a);
+					
+					var intersection1=[tmpPoint[0]+(h/d)*(point2[1]-point1[1]),tmpPoint[1]-(h/d)*(point2[0]-point1[0])];
+					var intersection2=[tmpPoint[0]-(h/d)*(point2[1]-point1[1]),tmpPoint[1]+(h/d)*(point2[0]-point1[0])];
+					
+					if(intersection1[0]-offsetStepped<=intersection2[0]-offsetStepped){
+						points.push([intersection1[0],intersection1[1],keyword,i]);
+					}
+					else{
+						points.push([intersection2[0],intersection2[1],keyword,i]);
+					}
+				}
+			}
+		}
+		//console.log(points);
+		//drawKeyword(context,keyword,pop,points[points.length-1]);
+		prev=tmp_i;		
+	}	
+	
+	console.log(points);
+	
+	//setTimeout(function(){},2000);
+	//context.clear(true);
+	for(var it=0;it<5;it++){
+		for(var i=0;i<points.length;i++){
+			for(var j=0;j<points.length;j++){
+				if(i!=j){
+					f1(points[i],points[j]);								
+				}
+			}
+			for(var j=0;j<points.length;j++){
+				if(i!=j){
+					f2(points[i],points[j],context);								
+				}
+			}
+			//for(var j=0;j<points.length;j++){
+            f3(points[i]);
+			//}
+		}
+	}
+	for(var i=0;i<points.length;i++){
+		var pop=getPopularity(points[i][2]);
+		//f3(points[i]);
+		drawKeyword(context,points[i][2],pop,points[i]);
+	}
+	
+		
+	function magnitude(vector){
+		return Math.sqrt(vector[0]*vector[0]+vector[1]*vector[1]);		
+	}
+	function normalise(vector){
+		var magn=magnitude(vector);
+		vector[0]/=magn;
+		vector[1]/=magn;
+	}
+	
+	function f1(point1,point2){
+		var k1=0.05;
+		var d=dist(point1,point2);
+		var direction=[point2[0]-point1[0],point2[1]-point1[1]];
+		normalise(direction);
+		/*
+		if(direction[0]!==0){
+			direction[0]=direction[0]>0?1:-1;
+		}
+		if(direction[1]!==0){
+			direction[1]=direction[1]>0?1:-1;
+		}
+		*/
+		var force=(A[point1[3]][point2[3]]*off-d)*k1;
+		//console.log(force);
+		
+		//point1[0]+=force*direction[0]/2;
+		//point1[1]+=force*direction[1]/2;
+		//point2[0]-=force*direction[0]/2;
+		//point2[1]-=force*direction[1]/2;
+		
+        /*
+        point1[0]+=force*k1*direction[0]*-0.5;
+		point1[1]+=force*k1*direction[1]*-0.5;
+		point2[0]+=force*k1*direction[0]*0.5;
+		point2[1]+=force*k1*direction[1]*0.5;
+        */
+        
+        
+        point1[0]+=k1*direction[0]*-0.5;
+		point1[1]+=k1*direction[1]*-0.5;
+		point2[0]+=k1*direction[0]*0.5;
+		point2[1]+=k1*direction[1]*0.5;
+        
+	}
+	
+	function f2(point1,point2,context){		
+		var k2=0.7;
+		var p1=point1;
+		var p2=point2;
+		var w=context.measureText(point1[2]).width;
+		if(point1[0]>point2[0]){
+			p1=point2;
+			p2=point1;
+			w=context.measureText(point2[2]).width;
+		}
+		
+		if(p1[0]+w>p2[0]){
+			var d_x=p1[0]+w-p2[0];
+			var p1=point1;
+			var p2=point2;           
+			var h=getFontSize(point2[2]);
+			if(point1[1]>point2[1]){
+				p1=point2;
+				p2=point1;
+				h=getFontSize(point1[2]);
+			}
+			
+			if(p2[1]-h-p1[1]<0){
+				var d_y=p1[1]-p2[1]+h;
+				//console.log(p1);
+				//console.log(p2);
+				//console.log(h);
+				//console.log("overlay %s,%s - %d %d",p1[2],p2[2],d_x,d_y);
+				if(d_x<d_y){
+					p1[0]-=k2*d_x/2;
+					p2[0]+=k2*d_x/2;
+				}
+				else{
+					p1[1]-=k2*d_y/2;
+					p2[1]+=k2*d_y/2;
+				}				
+				//console.log("overlay %s,%s - %d %d",p1[2],p2[2],d_x,d_y);
+			}
+			else{
+				return 0;
+			}
+		}
+		else{
+			return 0;
+		}
+	}
+	
+	function f3(point){
+		var k3=0.2;
+		var keyword=point[2];
+		var ind=getMaxRelevanceIndex(keyword);
+        if(ind!==-1){
+            var pop=getPopularity(keyword);
+                   
+            var dist=ind*step-point[0];		
+            //console.log(dist);
+            var force=k3*pop*dist;
+            //console.log(force);
+            point[0]+=force;
+        }
+	}
+	
+    function getFontSize(keyword){
+        var pop=getPopularity(keyword);
+        var tolerance=0;
+        if(pop*maxFontSize<6){
+            tolerance=6;
+        }
+        return pop*maxFontSize+tolerance;
+    }   
+	
+	function getColor(i){
+		var color='#000000';
+		switch(i){
+			case 1:{
+				color='#4f81bd';
+				break;
+			}
+			case 2:{
+				color='#c0504d';
+				break;
+			}
+			case 3:{
+				color='#9bbb59';
+				break;
+			}
+			case 4:{
+				color='#8064a2';
+				break;
+			}
+			case 5:{
+				color='#4bacc6';
+				break;
+			}
+		}
+		return color;
+	}
+	
+	for(var i=2;i<7;i++){
+		context.beginPath();
+		context.moveTo((i-1)*step,670);
+		context.lineTo(i*step,670);
+		context.strokeStyle=getColor(i-1);
+		context.stroke();
+	}
+	
+	
+	
 </script>
-
-<p>
-tada
-</p>

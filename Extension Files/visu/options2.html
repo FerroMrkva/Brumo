@@ -1,0 +1,55 @@
+<div>
+	<canvas id="canvas" width="900" height="700" style="border:1px solid #000000;"></canvas>
+
+
+
+	<script>
+MP.me.indexHistoryByTime({'maxResults':1000},function(){
+		MP.me.getUserTimedTags({'unitCount':5},function(response){
+			var sucet={};
+			for(var i=0;i<response.length;++i){
+			for(var j=0;j<response[i].keywords.length;++j){
+			var keyword=response[i].keywords[j];
+			var relevance=response[i].relevance[j];
+			if (typeof(sucet[keyword])!='number'){
+			sucet[keyword]=relevance;
+			}
+			else sucet[keyword]+=relevance;
+			}
+			}
+			var mx=-1;
+			var keywords=[];
+			var relevance=[];
+			for(var keyword in sucet){
+			if (sucet[keyword]>mx) mx=sucet[keyword];
+			keywords.push(keyword);
+			relevance.push(sucet[keyword]);
+			}
+			for(var i=0;i<response.length;++i){
+				response[i].relevance.forEach(function(item){
+						item/=mx;
+						});
+			}
+
+			var graph=new Graph(keywords,relevance,response);
+			graph.initList();
+			console.log(graph);
+
+			var spreadActivation=new SpreadingActivation(graph,0.8,0.095);
+			spreadActivation.init();
+			spreadActivation.spread();
+			console.log(spreadActivation);
+			//console.log(spreadActivation.A);
+			var mst=new MST(graph,spreadActivation.A);
+			mst.createAdjacencyMatrix(0.17);
+			mst.find();
+			console.log(mst);
+			var renderer=new Renderer(document.getElementById("canvas").getContext('2d'),900,700,graph,mst);
+			renderer.init();
+			renderer.render();
+			console.log(renderer);
+		});
+});
+
+	</script>
+</div>
