@@ -1,0 +1,15 @@
+{
+	"name": "Timed queries demo",
+	"description": "Timed queries demo",
+	"version": "1.0",
+	"author": "FerroMrkva",
+	"files":[
+	{
+		"name": "options.html",
+		"role": "options page"
+	},
+	{
+		"name": "options.js",
+		"role": "options script"
+	}]
+}
